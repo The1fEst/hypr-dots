@@ -1,0 +1,17 @@
+[Unit]
+Description=proscenio
+PartOf=graphical-session.target
+After=graphical-session.target
+StartLimitIntervalSec=300
+StartLimitBurst=20
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/proscenio
+Restart=on-failure
+RestartSec=2
+Slice=session.slice
+KillMode=process
+
+[Install]
+WantedBy=hyprland-session.target

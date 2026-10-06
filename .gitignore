@@ -1,0 +1,5 @@
+/home/.config/hypr/hyprland/colors.lua
+/home/.config/hypr/hyprlock/colors.conf
+/pkg/*/*.tar.*
+/pkg/*/pkg/
+/pkg/*/src/

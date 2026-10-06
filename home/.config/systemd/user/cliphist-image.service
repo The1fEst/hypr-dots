@@ -1,0 +1,16 @@
+[Unit]
+Description=Clipboard history for images
+PartOf=graphical-session.target
+After=graphical-session.target
+StartLimitIntervalSec=300
+StartLimitBurst=20
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/wl-paste --type image --watch /usr/bin/bash -c 'cliphist store && proscenio ipc call cliphistService update'
+Restart=always
+RestartSec=2
+Slice=session.slice
+
+[Install]
+WantedBy=hyprland-session.target

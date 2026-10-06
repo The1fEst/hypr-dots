@@ -1,0 +1,365 @@
+require("hyprland.lib")
+require("hyprland.variables")
+if is_file_exists(HOME .. "/.config/hypr/custom/variables.lua") then
+    require("custom.variables")
+end
+
+local workspaceNumberKeys = math.min(workspaceGroupSize, 10)
+
+local hyprScripts = "$HOME/.config/hypr/hyprland/scripts"
+local function shellIpc(call)
+    return "proscenio ipc call " .. call
+end
+local shellIsAlive = "{ " .. shellIpc("TEST_ALIVE") .. "; } >/dev/null 2>&1"
+
+hl.bind("SUPER_L", hl.dsp.global("proscenio:workspaceNumber"), { ignore_mods = true, transparent = true })
+hl.bind("SUPER_R", hl.dsp.global("proscenio:workspaceNumber"), { ignore_mods = true, transparent = true })
+hl.bind("SUPER_L", hl.dsp.global("proscenio:workspaceNumber"),
+    { ignore_mods = true, transparent = true, release = true })
+hl.bind("SUPER_R", hl.dsp.global("proscenio:workspaceNumber"),
+    { ignore_mods = true, transparent = true, release = true })
+hl.bind("SUPER + Tab", hl.dsp.global("proscenio:overviewWorkspacesToggle"), { description = "Shell: Toggle overview" })
+hl.bind("SUPER + V", hl.dsp.global("proscenio:overviewClipboardToggle"))
+hl.bind("SUPER + Period", hl.dsp.global("proscenio:overviewEmojiToggle"))
+hl.bind("SUPER + A", hl.dsp.global("proscenio:searchToggle"), { description = "Shell: Toggle search" })
+hl.bind("SUPER + N", hl.dsp.global("proscenio:sidebarRightToggle"), { description = "Shell: Toggle right sidebar" })
+hl.bind("SUPER + ALT + N", hl.dsp.global("proscenio:calendarToggle"), { description = "Shell: Toggle calendar" })
+hl.bind("SUPER + Slash", hl.dsp.global("proscenio:cheatsheetToggle"), { description = "Shell: Toggle cheatsheet" })
+hl.bind("SUPER + K", hl.dsp.global("proscenio:oskToggle"), { description = "Shell: Toggle on-screen keyboard" })
+hl.bind("SUPER + M", hl.dsp.global("proscenio:mediaControlsToggle"), { description = "Shell: Toggle media controls" })
+hl.bind("CTRL + ALT + Delete", hl.dsp.global("proscenio:sessionToggle"), { description = "Shell: Toggle session menu" })
+hl.bind("CTRL + ALT + Delete", hl.dsp.exec_cmd(shellIsAlive .." || pkill wlogout || wlogout -p layer-shell"))
+hl.bind("SHIFT + SUPER + ALT + Slash", hl.dsp.exec_cmd(welcomeApp))
+hl.bind("CTRL + SUPER + ALT + Slash", hl.dsp.exec_cmd("xdg-open $HOME/.config/hypr/hyprland/keybinds.lua"),
+    { description = "Edit keybinds" })
+
+hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd(shellIpc("brightness increment") .. " || brightnessctl s 5%+"),
+    { locked = true, repeating = true })
+hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd(shellIpc("brightness decrement") .. " || brightnessctl s 5%-"),
+    { locked = true, repeating = true })
+hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 2%+ -l 1.5"),
+    { locked = true, repeating = true })
+hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 2%-"),
+    { locked = true, repeating = true })
+
+hl.bind("CTRL + SUPER + T", hl.dsp.global("proscenio:wallpaperSelectorToggle"),
+    { description = "Shell: Change wallpaper" })
+hl.bind("CTRL + SUPER + ALT + T", hl.dsp.global("proscenio:wallpaperSelectorRandom"),
+    { description = "Shell: Random wallpaper" })
+hl.bind("CTRL + SUPER + SHIFT + D", hl.dsp.global("proscenio:toggleLightDark"),
+    { description = "Shell: Toggle light/dark mode" })
+hl.bind("CTRL + SUPER + T", hl.dsp.exec_cmd(shellIsAlive .." || proscenio switchwall"))
+hl.bind("CTRL + SUPER + R", hl.dsp.exec_cmd("killall ydotool; systemctl --user restart proscenio.service"),
+    { description = "Shell: Restart widgets" })
+
+--##! Utilities
+--# Screenshot, Record, OCR, Color picker, Clipboard history
+hl.bind("SUPER + V", hl.dsp.exec_cmd(
+        shellIsAlive .." || pkill fuzzel || cliphist list | fuzzel --match-mode fzf --dmenu | cliphist decode | wl-copy"),
+    { description = "Utilities: Clipboard history >> clipboard" })
+hl.bind("SUPER + Period", hl.dsp.exec_cmd(
+        shellIsAlive .." || pkill fuzzel || " .. hyprScripts .. "/fuzzel-emoji.sh copy"),
+    { description = "Utilities: Emoji >> clipboard" })
+hl.bind("Print", hl.dsp.global("proscenio:regionScreenshot"), { description = "Utilities: Screen snip" })
+hl.bind("Print",
+    hl.dsp.exec_cmd(shellIsAlive .." || pidof slurp || hyprshot --freeze --clipboard-only --mode region --silent"))
+--# Color picker
+hl.bind("SUPER + SHIFT + C", hl.dsp.exec_cmd("hyprpicker -a"),
+    { description = "Utilities: Pick color #RRGGBB >> clipboard" })
+--# Recording stuff
+hl.bind("SUPER + SHIFT + R", hl.dsp.global("proscenio:regionRecord"),
+    { locked = true, description = "Utilities: Record region (no sound)" })
+hl.bind("SUPER + SHIFT + R", hl.dsp.exec_cmd(shellIsAlive .." || proscenio record"), { locked = true })
+hl.bind("SUPER + ALT + R", hl.dsp.global("proscenio:regionRecord"),
+    { locked = true, description = "Utilities: Record region (no sound)" })
+hl.bind("SUPER + ALT + R", hl.dsp.exec_cmd(shellIsAlive .." || proscenio record"), { locked = true })
+hl.bind("CTRL + ALT + R", hl.dsp.exec_cmd("proscenio record --fullscreen"),
+    { locked = true, description = "Utilities: Record screen (no sound)" })
+hl.bind("SUPER + SHIFT + ALT + R", hl.dsp.exec_cmd("proscenio record --fullscreen --sound"),
+    { locked = true, description = "Utilities: Record screen (with sound)" })
+hl.bind("SUPER + CTRL + SHIFT + R", hl.dsp.global("proscenio:recordStop"),
+    { locked = true, description = "Utilities: Stop recording" })
+hl.bind("SUPER + CTRL + SHIFT + R", hl.dsp.exec_cmd(shellIsAlive .." || pkill wf-recorder"), { locked = true })
+--# Fullscreen screenshot
+local grimhyprctl = "grim -o \"$(hyprctl activeworkspace -j | jq -r '.monitor')\""
+hl.bind("SUPER + Print", hl.dsp.exec_cmd(grimhyprctl .. " - | wl-copy"),
+    { locked = true, description = "Utilities: Screenshot >> clipboard" })
+hl.bind("CTRL + Print", hl.dsp.exec_cmd(
+    "mkdir -p $(xdg-user-dir PICTURES)/Screenshots && " ..
+    grimhyprctl .. " $(xdg-user-dir PICTURES)/Screenshots/Screenshot_\"$(date '+%Y-%m-%d_%H.%M.%S')\".png"
+), { locked = true, non_consuming = true, description = "Utilities: Screenshot >> clipboard & file" })
+hl.bind("CTRL + Print", hl.dsp.exec_cmd(grimhyprctl .. " - | wl-copy"), { locked = true, non_consuming = true })
+--##! Screen
+--# Zoom
+local function zoomfunction(value)
+    local zoomvalue = hl.get_config("cursor:zoom_factor")
+    if (zoomvalue + value) > 3.0 then
+        hl.config({ cursor = { zoom_factor = 3.0 } })
+    elseif (zoomvalue + value) < 1.0 then
+        hl.config({ cursor = { zoom_factor = 1.0 } })
+    else
+        hl.config({ cursor = { zoom_factor = zoomvalue + value } })
+    end
+end
+hl.bind("SUPER + Minus", function() zoomfunction(-0.3) end, { repeating = true, description = "Screen: Zoom out" })
+hl.bind("SUPER + Equal", function() zoomfunction(0.3) end, { repeating = true, description = "Screen: Zoom in" })
+
+--# Zoom with keypad
+hl.bind("SUPER + code:82", function() zoomfunction(-0.3) end, { repeating = true, description = "Screen: Zoom out" })
+hl.bind("SUPER + code:86", function() zoomfunction(0.3) end, { repeating = true, description = "Screen: Zoom in" })
+
+--##! Media
+local mediaNextCommand = shellIpc("mpris next")
+local mediaPreviousCommand = shellIpc("mpris previous")
+local mediaPlayPauseCommand = shellIpc("mpris playPause")
+hl.bind("SUPER + SHIFT + N", hl.dsp.exec_cmd(mediaNextCommand), { locked = true, description = "Media: Next track" })
+hl.bind("XF86AudioNext", hl.dsp.exec_cmd(mediaNextCommand), { locked = true, description = "Media: Next track" })
+hl.bind("SUPER + SHIFT + B", hl.dsp.exec_cmd(mediaPreviousCommand),
+    { locked = true, description = "Media: Previous track" })
+hl.bind("XF86AudioPrev", hl.dsp.exec_cmd(mediaPreviousCommand),
+    { locked = true, description = "Media: Previous track" })
+hl.bind("SUPER + SHIFT + P", hl.dsp.exec_cmd(mediaPlayPauseCommand),
+    { locked = true, description = "Media: Play/pause media" })
+hl.bind("XF86AudioPlay", hl.dsp.exec_cmd(mediaPlayPauseCommand),
+    { locked = true, description = "Media: Play/pause media" })
+hl.bind("SUPER + SHIFT + M", hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_SINK@ toggle"),
+    { locked = true, description = "Media: Toggle mute" })
+hl.bind("XF86AudioMute", hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_SINK@ toggle"),
+    { locked = true, description = "Media: Toggle mute" })
+for _, keys in ipairs({ "ALT + Slash", "XF86AudioMicMute" }) do
+    hl.bind(keys, hl.dsp.global("proscenio:micMuteToggle"), { locked = true, description = "Media: Toggle mic" })
+    hl.bind(keys, hl.dsp.exec_cmd(shellIsAlive .. " || wpctl set-mute @DEFAULT_SOURCE@ toggle"), { locked = true })
+end
+
+--#!
+--##! Window
+--# Focusing
+hl.bind("SUPER + mouse:272", hl.dsp.window.drag(), { mouse = true, description = "Window: Move" })
+hl.bind("SUPER + mouse:274", hl.dsp.window.drag(), { mouse = true, description = "Window: Move" })
+hl.bind("SUPER + mouse:273", hl.dsp.window.resize(), { mouse = true, description = "Window: Resize" })
+--#/# bind = SUPER + ←/↑/→/↓,, -- Focus in direction
+for i = 1, 4 do
+    local arrowkey = { "Left", "Right", "Up", "Down" }
+    local focusdir = { "l", "r", "u", "d" }
+    hl.bind("SUPER + " .. arrowkey[i], hl.dsp.focus({ direction = focusdir[i] }),
+        { description = "Window: Focus " .. arrowkey[i] })
+end
+for i = 1, 2 do
+    local arrowkey = { "BracketLeft", "BracketRight" }
+    local focusdir = { "l", "r" }
+    local name = { "Left", "Right" }
+    hl.bind("SUPER + " .. arrowkey[i], hl.dsp.focus({ direction = focusdir[i] }),
+        { description = "Window: Focus " .. name[i] })
+end
+--#/# bind = SUPER + SHIFT, ↑/↓,, -- Move in direction
+for i = 1, 2 do
+    local arrowkey = { "Up", "Down" }
+    local focusdir = { "u", "d" }
+    hl.bind("SUPER + SHIFT + " .. arrowkey[i], hl.dsp.window.move({ direction = focusdir[i] }),
+        { description = "Window: Move " .. arrowkey[i] })
+end
+--#/# bind = SUPER + ALT + ←/↑/→/↓,, -- Move focused window in direction
+for i = 1, 4 do
+    local arrowkey = { "Left", "Right", "Up", "Down" }
+    local movedir = { "l", "r", "u", "d" }
+    hl.bind("SUPER + ALT + " .. arrowkey[i], hl.dsp.window.move({ direction = movedir[i] }),
+        { repeating = true, description = "Window: Move " .. arrowkey[i] })
+end
+
+hl.bind("ALT + F4",
+    function()
+        hl.exec_cmd(
+            "notify-send \"Wrong close keybind\" \"Super+Q to close. Use Alt+F4 for Windows VMs\" -a Hyprland")
+    end,
+    { non_consuming = true })
+hl.bind("SUPER + Q", hl.dsp.window.close(), { description = "Window: Close" })
+hl.bind("SUPER + SHIFT + ALT + Q", hl.dsp.exec_cmd("hyprctl kill"), { description = "Window: Forcefully zap a window" })
+
+--# Window split ratio
+--#/# binde = SUPER, ;/',, -- Adjust split ratio
+hl.bind("SUPER + Semicolon", hl.dsp.layout("splitratio -0.1"),
+    { repeating = true, description = "Window: Decrease split ratio" })
+hl.bind("SUPER + Apostrophe", hl.dsp.layout("splitratio +0.1"),
+    { repeating = true, description = "Window: Increase split ratio" })
+--# Positioning mode
+hl.bind("SUPER + W", hl.dsp.window.float({ action = "toggle" }), { description = "Window: Toggle floating" })
+hl.bind("SUPER + ALT + Space", hl.dsp.window.float({ action = "toggle" }), { description = "Window: Toggle floating" })
+hl.bind("SUPER + J", hl.dsp.layout("togglesplit"), { description = "Window: Toggle split" })
+hl.bind("SUPER + D", hl.dsp.window.fullscreen({ mode = "fullscreen", action = "toggle" }),
+    { description = "Window: Fullscreen" })
+
+--#/# bind = SUPER + F,, -- Toggle monocle layout on the current workspace
+--#/# bind = SUPER + SHIFT + ←/→,, -- Cycle windows of the current workspace
+-- Monocle is a built-in Hyprland layout: every window fills the workspace and only the
+-- topmost one is visible. It is turned on per workspace with a workspace rule, so the
+-- other workspaces keep tiling normally.
+local monocle_rules = {} -- [workspace id] = HL.WorkspaceRule
+
+local function monocle_toggle()
+    local ws = hl.get_active_workspace()
+    if not ws then
+        return
+    end
+    local rule = monocle_rules[ws.id]
+    if not rule then
+        -- Rules are created enabled, so the first press is the "on" press
+        monocle_rules[ws.id] = hl.workspace_rule({
+            workspace = ws.special and ws.name or tostring(ws.id),
+            layout = "monocle",
+        })
+        return
+    end
+    rule:set_enabled(ws.tiled_layout ~= "monocle")
+end
+
+local function monocle_cycle(prev)
+    local ws = hl.get_active_workspace()
+    if ws and ws.tiled_layout == "monocle" then
+        -- Monocle's own layout message, it also raises the window it focuses
+        hl.dispatch(hl.dsp.layout(prev and "cycleprev" or "cyclenext"))
+    else
+        hl.dispatch(hl.dsp.window.cycle_next({ prev = prev }))
+    end
+end
+
+hl.bind("SUPER + F", monocle_toggle, { description = "Window: Toggle monocle layout" })
+hl.bind("SUPER + SHIFT + Left", function()
+    monocle_cycle(true)
+end, { repeating = true, description = "Window: Cycle to previous window" })
+hl.bind("SUPER + SHIFT + Right", function()
+    monocle_cycle(false)
+end, { repeating = true, description = "Window: Cycle to next window" })
+hl.bind("SUPER + ALT + F", hl.dsp.window.fullscreen_state({ internal = 0, client = 3, action = "toggle" }),
+    { description = "Window: Fullscreen spoof" })
+hl.bind("SUPER + P", hl.dsp.window.pin(), { description = "Window: Pin" })
+
+--#/# bind = SUPER+ALT, Hash,, -- Send to workspace -- (1, 2, 3,...)
+for i = 1, workspaceNumberKeys do
+    hl.bind("SUPER + ALT + " .. (i % 10), function()
+        hl.dispatch(hl.dsp.window.move({ workspace = workspace_in_group(i), follow = false }))
+    end, { description = "Window: Send to workspace " .. i })
+end
+--# We also use raw keycodes because some keyboard layouts register number keys as different chars. The codes can be verified with `wev`
+-- for i = 1, 10 do
+--     local numberkey = { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 }
+--     hl.bind("SUPER + ALT + code:" .. numberkey[i], function()
+--         hl.dispatch(hl.dsp.window.move({ workspace = workspace_in_group(i), follow = false }))
+--     end)
+-- end
+--# keypad numbers
+for i = 1, workspaceNumberKeys do
+    local numpadkey = { 87, 88, 89, 83, 84, 85, 79, 80, 81, 90 }
+    hl.bind("SUPER + ALT + code:" .. numpadkey[i], function()
+        hl.dispatch(hl.dsp.window.move({ workspace = workspace_in_group(i), follow = false }))
+    end, { description = "Window: Send to workspace " .. i })
+end
+
+hl.bind("SUPER + ALT + S",
+    hl.dsp.window.move({ workspace = "special:magic", follow = false }),
+    { description = "Window: Send to scratchpad silently" })
+
+--##! Workspace
+--# Switching
+--#/# bind = SUPER, Hash,, -- Focus workspace -- (1, 2, 3,...)
+for i = 1, workspaceNumberKeys do
+    hl.bind("SUPER + " .. (i % 10), function()
+        hl.dispatch(hl.dsp.focus({ workspace = workspace_in_group(i) }))
+    end, { description = "Workspace: Focus " .. i })
+end
+--# keypad numbers
+for i = 1, workspaceNumberKeys do
+    local numpadkey = { 87, 88, 89, 83, 84, 85, 79, 80, 81, 90 }
+    hl.bind("SUPER + code:" .. numpadkey[i], function()
+        hl.dispatch(hl.dsp.focus({ workspace = workspace_in_group(i) }))
+    end, { description = "Workspace: Focus " .. i })
+end
+
+--#/# bind = CTRL+SUPER, ←/→,, -- Focus left/right adjacent workspace
+--#/# bind = CTRL+SUPER+ALT, ←/→,, -- Move window to adjacent workspace and follow
+-- Wraps inside the group of `workspaceGroupSize` workspaces the focused one belongs to,
+-- so a monitor with its own group keeps its arrows to itself.
+local function workspace_group_cycle(delta)
+    local curr = hl.get_active_workspace().id
+    local base = math.floor((curr - 1) / workspaceGroupSize) * workspaceGroupSize
+    local offset = ((curr - base - 1 + delta) % workspaceGroupSize) + 1
+    return base + offset
+end
+
+for _, side in ipairs({ { "Left", -1, "left" }, { "H", -1, "left" }, { "Right", 1, "right" }, { "L", 1, "right" } }) do
+    hl.bind("CTRL + SUPER + " .. side[1], function()
+        hl.dispatch(hl.dsp.focus({ workspace = workspace_group_cycle(side[2]) }))
+    end, { description = "Workspace: Focus " .. side[3] .. " adjacent" })
+    hl.bind("CTRL + SUPER + ALT + " .. side[1], function()
+        hl.dispatch(hl.dsp.window.move({ workspace = workspace_group_cycle(side[2]), follow = true }))
+    end, { description = "Window: Send to " .. side[3] .. " adjacent workspace and follow" })
+end
+--## Special
+hl.bind("SUPER + S", hl.dsp.workspace.toggle_special("magic"), { description = "Workspace: Toggle scratchpad" })
+hl.bind("CTRL + SUPER + S", hl.dsp.workspace.toggle_special("magic"), { description = "Workspace: Toggle scratchpad" })
+hl.bind("SUPER + SHIFT + S", hl.dsp.window.move({ workspace = "special:magic", follow = true }),
+    { description = "Window: Send to scratchpad" })
+for i = 1, 2 do
+    local key = { "Up", "Down" }
+    local prefix = { "r-5", "r+5" }
+    hl.bind("CTRL + SUPER + " .. key[i], hl.dsp.focus({ workspace = prefix[i] }))
+end
+
+--##! Virtual machines
+hl.define_submap("virtual-machine", function()
+    hl.bind("SUPER + ALT + F1", function()
+        local currentsubmap = hl.get_current_submap()
+        if currentsubmap == "virtual-machine" then
+            hl.dispatch(hl.dsp.exec_cmd(
+                "notify-send 'Exited Virtual Machine submap' 'Keybinds re-enabled' -a 'Hyprland'"))
+            hl.dispatch(hl.dsp.submap("reset"))
+        elseif currentsubmap == "" then
+            hl.dispatch(hl.dsp.exec_cmd(
+                "notify-send 'Entered Virtual Machine submap' 'Keybinds disabled. hit SUPER+ALT+F1 to escape' -a 'Hyprland'"))
+            hl.dispatch(hl.dsp.submap("virtual-machine"))
+        end
+    end, { submap_universal = true })
+end)
+
+
+--#!
+--# Testing
+hl.bind("SUPER + ALT + F11",
+    hl.dsp.exec_cmd(
+        "bash -c 'RANDOM_IMAGE=$(find ~/Pictures -type f | shuf -n 1); ACTION=$(notify-send \"Test notification with body image\" \"This notification should contain your user account <b>image</b> and <a href=\\\"https://discord.com/app\\\">Discord</a> <b>icon</b>. Oh and here is a random image in your Pictures folder: <img src=\\\"$RANDOM_IMAGE\\\" alt=\\\"Testing image\\\"/>\" -a \"Hyprland\" -p -h \"string:image-path:/var/lib/AccountsService/icons/$USER\" -t 6000 -i \"discord\" -A \"openImage=Profile image\" -A \"action2=Open the random image\" -A \"action3=Useless button\"); [[ $ACTION == *openImage ]] && xdg-open \"/var/lib/AccountsService/icons/$USER\"; [[ $ACTION == *action2 ]] && xdg-open \"$RANDOM_IMAGE\"'")
+) -- # [hidden]
+hl.bind("SUPER + ALT + F12",
+    hl.dsp.exec_cmd(
+        "bash -c 'RANDOM_IMAGE=$(find ~/Pictures -type f | shuf -n 1); ACTION=$(notify-send \"Test notification\" \"This notification should contain a random image in your <b>Pictures</b> folder and <a href=\\\"https://discord.com/app\\\">Discord</a> <b>icon</b>.\n<i>Flick right to dismiss!</i>\" -a \"Discord (fake)\" -p -h \"string:image-path:$RANDOM_IMAGE\" -t 6000 -i \"discord\" -A \"openImage=Profile image\" -A \"action2=Useless button\"); [[ $ACTION == *openImage ]] && xdg-open \"/var/lib/AccountsService/icons/$USER\"'")
+)                                                                                                        -- # [hidden]
+hl.bind("SUPER + ALT + Equal",
+    hl.dsp.exec_cmd("notify-send 'Urgent notification' 'Ah hell no' -u critical -a 'Hyprland keybind'")) -- # [hidden]
+
+--##! Session
+hl.bind("SUPER + L", hl.dsp.exec_cmd("loginctl lock-session"), { description = "Session: Lock" })
+hl.bind("SUPER + SHIFT + L", hl.dsp.exec_cmd("systemctl suspend || loginctl suspend"),
+    { locked = true, description = "Session: Sleep" }) -- Sleep
+-- hl.bind("switch:on:Lid Switch", hl.dsp.exec_cmd("systemctl suspend || loginctl suspend"), {locked = true} ) -- # [hidden] Suspend when laptop lid is closed, uncomment if for whatever reason it's not the default behavior
+
+hl.bind("CTRL + SHIFT + ALT + SUPER + Delete", hl.dsp.exec_cmd("systemctl poweroff || loginctl poweroff"),
+    { description = "Session: Shut down" }) -- # [hidden] Power off
+
+
+--##! Input
+hl.bind("SUPER + Space", hl.dsp.global("proscenio:xkbLayoutNext"),
+    { locked = true, description = "Input: Switch keyboard layout" })
+hl.bind("SUPER + Space", hl.dsp.exec_cmd(shellIsAlive .." || hyprctl switchxkblayout all next"), { locked = true })
+
+--##! Apps
+hl.bind("SUPER + Return", hl.dsp.exec_cmd(terminal), { description = "App: Terminal" })
+hl.bind("SUPER + T", hl.dsp.exec_cmd(terminal), { description = "App: Terminal" })
+hl.bind("SUPER + E", hl.dsp.exec_cmd(fileManager), { description = "App: File manager" })
+hl.bind("SUPER + C", hl.dsp.exec_cmd(codeEditor), { description = "App: Code editor" })
+hl.bind("CTRL + SUPER + SHIFT + ALT + W", hl.dsp.exec_cmd(officeSoftware), { description = "App: Office software" })
+hl.bind("SUPER + X", hl.dsp.exec_cmd(textEditor), { description = "App: Text editor" })
+hl.bind("CTRL + SUPER + V", hl.dsp.exec_cmd(volumeMixer), { description = "App: Volume mixer" })
+hl.bind("SUPER + I", hl.dsp.exec_cmd(settingsApp), { description = "App: Settings app" })
+hl.bind("CTRL + SHIFT + Escape", hl.dsp.exec_cmd(taskManager), { description = "App: Task manager" })
+
+--# Cursed stuff
+--## Make window not amogus large
+hl.bind("CTRL + SUPER + Backslash", hl.dsp.window.resize({ x = 640, y = 480, "exact" }))

@@ -1,0 +1,91 @@
+pkgname=hypr-dots
+pkgver=1.0
+pkgrel=1
+pkgdesc='Everything the hypr-dots configs and the proscenio shell run on'
+arch=(any)
+license=(GPL-3.0-only)
+provides=(plasma-workspace)
+conflicts=(plasma-workspace)
+optdepends=(
+  'mpvpaper: video wallpapers'
+)
+depends=(
+  adw-gtk-theme-git
+  bibata-cursor-theme-bin
+  bluez
+  bluez-utils
+  brave-origin-bin
+  brightnessctl
+  btop
+  cava
+  cliphist
+  coreutils
+  curl
+  darkly-bin
+  ddcutil
+  dolphin
+  efibootmgr
+  eza
+  ffmpeg
+  fish
+  fontconfig
+  fuzzel
+  geoclue
+  glib2
+  gnome-calendar
+  gnome-keyring
+  go-yq
+  grim
+  hypridle
+  hyprland
+  hyprlock
+  hyprpicker
+  hyprshot
+  imagemagick
+  jq
+  kdialog
+  kitty
+  libdbusmenu-gtk3
+  libnotify
+  libpulse
+  libqalculate
+  matugen
+  networkmanager
+  noto-fonts-cjk
+  otf-space-grotesk
+  pacman-contrib
+  papirus-icon-theme
+  pavucontrol-qt
+  pipewire-pulse
+  plasma-integration
+  power-profiles-daemon
+  qt6-wayland
+  rsync
+  satty
+  slurp
+  starship
+  thunderbird
+  ttf-jetbrains-mono-nerd
+  ttf-material-symbols-variable-git
+  ttf-readex-pro
+  ttf-twemoji
+  ufw
+  upower
+  visual-studio-code-bin
+  vlc
+  wf-recorder
+  wget
+  wireguard-tools
+  wireplumber
+  wl-clip-persist
+  wl-clipboard
+  wlogout
+  wtype
+  xdg-desktop-portal
+  xdg-desktop-portal-gtk
+  xdg-desktop-portal-hyprland
+  xdg-desktop-portal-kde
+  xdg-user-dirs
+  xdg-utils
+  ydotool
+)
