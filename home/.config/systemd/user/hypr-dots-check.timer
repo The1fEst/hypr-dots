@@ -1,0 +1,9 @@
+[Unit]
+Description=Check for hypr-dots updates five minutes into the session and every six hours
+
+[Timer]
+OnActiveSec=5min
+OnUnitInactiveSec=6h
+
+[Install]
+WantedBy=hyprland-session.target

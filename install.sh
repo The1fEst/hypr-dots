@@ -2,7 +2,10 @@
 set -euo pipefail
 
 REPO=$(cd "$(dirname "$(readlink -f "$0")")" && pwd)
-BACKUP=$HOME/.local/state/hypr-dots/backup/$(date +%Y%m%d-%H%M%S)
+STATE=$HOME/.local/state/hypr-dots
+BACKUP=$STATE/backup/$(date +%Y%m%d-%H%M%S)
+SHELL_PKGBUILD=https://raw.githubusercontent.com/The1fEst/proscenio/main/packaging/PKGBUILD
+SHELL_PACKAGE=$HOME/.cache/proscenio/package
 
 MANAGED=(
   .config/code-flags.conf
@@ -18,12 +21,15 @@ MANAGED=(
   .config/starship.toml
   .config/systemd/user/cliphist-image.service
   .config/systemd/user/cliphist-text.service
+  .config/systemd/user/hypr-dots-check.service
+  .config/systemd/user/hypr-dots-check.timer
   .config/systemd/user/hypridle.service
   .config/systemd/user/hyprland-session.target
   .config/systemd/user/proscenio.service
   .config/systemd/user/wl-clip-persist.service
   .config/wlogout
   .config/xdg-desktop-portal/hyprland-portals.conf
+  .local/bin/hypr-dots-check
 )
 
 GENERATED=(
@@ -43,6 +49,7 @@ SEEDED=(
 UNITS=(
   cliphist-image.service
   cliphist-text.service
+  hypr-dots-check.timer
   hypridle.service
   proscenio.service
   wl-clip-persist.service
@@ -51,7 +58,8 @@ UNITS=(
 usage() {
   echo "usage: $0 [all|packages|configs|system|diff]"
   echo "  packages  paru, the proscenio package and the hypr-dots meta package"
-  echo "  configs   copies the configs in home/ into \$HOME and enables the session units"
+  echo "  configs   copies the configs in home/ into \$HOME, enables the session units and"
+  echo "            records the commit installed, for hypr-dots-check"
   echo "  system    groups, services, default apps, GTK and Qt settings, fonts"
   echo "  diff      shows how the configs in \$HOME differ from home/"
 }
@@ -68,12 +76,17 @@ install_paru() {
 
 install_depends() {
   local depends
-  mapfile -t depends < <(source "$REPO/pkg/$1/PKGBUILD" && printf '%s\n' "${depends[@]}")
+  mapfile -t depends < <(source "$1/PKGBUILD" && printf '%s\n' "${depends[@]}")
   paru -S --needed --noconfirm --asdeps "${depends[@]}"
 }
 
 build_pkgbuild() {
-  (cd "$REPO/pkg/$1" && makepkg -Acfsi --noconfirm)
+  (cd "$1" && makepkg -Acfsi --noconfirm)
+}
+
+fetch_shell_pkgbuild() {
+  mkdir -p "$SHELL_PACKAGE"
+  curl -fsSL -o "$SHELL_PACKAGE/PKGBUILD" "$SHELL_PKGBUILD"
 }
 
 remove_fork_packages() {
@@ -86,11 +99,12 @@ remove_fork_packages() {
 
 packages() {
   install_paru
-  install_depends fEst-proscenio
-  build_pkgbuild fEst-proscenio
-  install_depends hypr-dots
+  fetch_shell_pkgbuild
+  install_depends "$SHELL_PACKAGE"
+  build_pkgbuild "$SHELL_PACKAGE"
+  install_depends "$REPO/pkg/hypr-dots"
   remove_fork_packages
-  build_pkgbuild hypr-dots
+  build_pkgbuild "$REPO/pkg/hypr-dots"
 }
 
 generated_names() {
@@ -188,9 +202,17 @@ configs() {
     seed "$path"
   done
   enable_units
+  record_installed
   if pgrep -x Hyprland >/dev/null; then
     hyprctl reload >/dev/null || true
   fi
+}
+
+record_installed() {
+  local commit
+  commit=$(git -C "$REPO" rev-parse HEAD 2>/dev/null) || return 0
+  mkdir -p "$STATE"
+  printf 'repo=%q\ncommit=%q\n' "$REPO" "$commit" >"$STATE/installed"
 }
 
 show_diff() {

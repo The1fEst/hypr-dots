@@ -1,6 +1,6 @@
 pkgname=hypr-dots
 pkgver=1.0
-pkgrel=1
+pkgrel=2
 pkgdesc='Everything the hypr-dots configs and the proscenio shell run on'
 arch=(any)
 license=(GPL-3.0-only)
@@ -31,6 +31,7 @@ depends=(
   fontconfig
   fuzzel
   geoclue
+  git
   glib2
   gnome-calendar
   gnome-keyring
@@ -53,7 +54,6 @@ depends=(
   networkmanager
   noto-fonts-cjk
   otf-space-grotesk
-  pacman-contrib
   papirus-icon-theme
   pavucontrol-qt
   pipewire-pulse

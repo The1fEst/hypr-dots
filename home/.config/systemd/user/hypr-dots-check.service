@@ -1,0 +1,6 @@
+[Unit]
+Description=Check GitHub for hypr-dots commits newer than the installed configs
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/hypr-dots-check

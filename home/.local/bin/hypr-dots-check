@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+STATE=${XDG_STATE_HOME:-$HOME/.local/state}/hypr-dots
+
+[[ -r $STATE/installed ]] || exit 0
+source "$STATE/installed"
+
+git -C "$repo" fetch --quiet 2>/dev/null || exit 0
+upstream=$(git -C "$repo" rev-parse --quiet --verify '@{upstream}') || exit 0
+behind=$(git -C "$repo" rev-list --count "$commit..$upstream")
+((behind > 0)) || exit 0
+if [[ $(cat "$STATE/notified" 2>/dev/null) == "$upstream" ]]; then
+  exit 0
+fi
+echo "$upstream" >"$STATE/notified"
+
+if ((behind == 1)); then
+  body="1 new commit to install"
+else
+  body="$behind new commits to install"
+fi
+action=$(notify-send --app-name=hypr-dots --icon=system-software-update \
+  --action=update=Update --wait "hypr-dots" "$body") || exit 0
+if [[ $action == update ]]; then
+  systemd-run --user --quiet --collect -- kitty -1 --hold=yes fish -i -c \
+    "cd $(printf %q "$repo"); and git pull --ff-only; and ./install.sh configs"
+fi
