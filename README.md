@@ -3,6 +3,12 @@
 Configs for a Hyprland desktop on Arch Linux with the [proscenio](https://github.com/The1fEst/proscenio)
 shell, and an installer for the packages they need.
 
+![Dolphin, btop and fish in kitty, tiled on the first workspace](screenshots/desktop.webp)
+
+| | |
+|---|---|
+| ![The proscenio sidebar](screenshots/sidebar.webp) | ![The proscenio overview](screenshots/overview.webp) |
+
 ## Install
 
 ```bash
