@@ -75,9 +75,16 @@ install_paru() {
 }
 
 install_depends() {
-  local depends
+  local depends provides name
+  local assumed=()
   mapfile -t depends < <(source "$1/PKGBUILD" && printf '%s\n' "${depends[@]}")
-  paru -S --needed --noconfirm --asdeps "${depends[@]}"
+  mapfile -t provides < <(source "$1/PKGBUILD" && printf '%s\n' "${provides[@]}")
+  for name in "${provides[@]}"; do
+    if [[ -n $name ]]; then
+      assumed+=(--assume-installed "$name")
+    fi
+  done
+  paru -S --needed --noconfirm --asdeps "${assumed[@]}" "${depends[@]}"
 }
 
 build_pkgbuild() {
