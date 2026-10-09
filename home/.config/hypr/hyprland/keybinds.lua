@@ -130,6 +130,7 @@ for _, keys in ipairs({ "ALT + Slash", "XF86AudioMicMute" }) do
     hl.bind(keys, hl.dsp.global("proscenio:micMuteToggle"), { locked = true, description = "Media: Toggle mic" })
     hl.bind(keys, hl.dsp.exec_cmd(shellIsAlive .. " || wpctl set-mute @DEFAULT_SOURCE@ toggle"), { locked = true })
 end
+hl.bind("ALT + Slash", hl.dsp.send_shortcut({ mods = "ALT", key = "Shift_L" }))
 
 --#!
 --##! Window
