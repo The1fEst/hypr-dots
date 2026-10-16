@@ -175,6 +175,7 @@ copy() {
     cp "$source" "$target"
   fi
   echo "copied ~/$path"
+  changed_count=$((changed_count + 1))
 }
 
 seed() {
@@ -186,6 +187,7 @@ seed() {
   mkdir -p "$(dirname "$target")"
   cp -r "$REPO/home/$path" "$target"
   echo "created ~/$path"
+  changed_count=$((changed_count + 1))
 }
 
 enable_units() {
@@ -202,7 +204,9 @@ enable_units() {
 }
 
 configs() {
-  local path
+  local path previous
+  local changed_count=0
+  previous=$(read_installed_commit)
   for path in "${MANAGED[@]}"; do
     copy "$path"
   done
@@ -213,6 +217,36 @@ configs() {
   record_installed
   if pgrep -x Hyprland >/dev/null; then
     hyprctl reload >/dev/null || true
+  fi
+  if ((changed_count == 0)); then
+    echo "configs already match the repository"
+  fi
+  report_commits "$previous"
+}
+
+read_installed_commit() {
+  [[ -r $STATE/installed ]] || return 0
+  (
+    source "$STATE/installed"
+    echo "$commit"
+  )
+}
+
+report_commits() {
+  local previous=$1
+  local current
+  current=$(git -C "$REPO" rev-parse HEAD 2>/dev/null) || return 0
+  if [[ $previous == "$current" ]]; then
+    echo "hypr-dots was already at $(git -C "$REPO" log -1 --format='%h %s')"
+  elif git -C "$REPO" merge-base --is-ancestor "$previous" "$current" 2>/dev/null; then
+    echo "installed hypr-dots commits:"
+    git -C "$REPO" log --format='  %h %s' "$previous..$current"
+  elif [[ -n $previous ]]; then
+    echo "hypr-dots is now at $(git -C "$REPO" log -1 --format='%h %s')," \
+      "which does not follow the previously installed ${previous:0:7}"
+  fi
+  if [[ -n $(git -C "$REPO" status --porcelain -- home) ]]; then
+    echo "$REPO has uncommitted changes under home/; configs follow the files as they are"
   fi
 }
 
