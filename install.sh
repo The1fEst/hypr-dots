@@ -240,7 +240,7 @@ report_commits() {
     echo "hypr-dots was already at $(git -C "$REPO" log -1 --format='%h %s')"
   elif git -C "$REPO" merge-base --is-ancestor "$previous" "$current" 2>/dev/null; then
     echo "installed hypr-dots commits:"
-    git -C "$REPO" log --format='  %h %s' "$previous..$current"
+    git --no-pager -C "$REPO" log --format='  %h %s' "$previous..$current"
   elif [[ -n $previous ]]; then
     echo "hypr-dots is now at $(git -C "$REPO" log -1 --format='%h %s')," \
       "which does not follow the previously installed ${previous:0:7}"
