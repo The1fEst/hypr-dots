@@ -138,6 +138,7 @@ hl.layer_rule({ match = { namespace = "proscenio:polkit" }, no_anim = true})
 hl.layer_rule({ match = { namespace = "proscenio:popup" }, xray = false}) -- No weird color for bar tooltips (this in theory should suffice)
 hl.layer_rule({ match = { namespace = "proscenio:popup" }, ignore_alpha = 1}) -- No weird color for bar tooltips (but somehow this is necessary)
 hl.layer_rule({ match = { namespace = "proscenio:mediaControls" }, ignore_alpha = 1}) -- Same as above
+hl.layer_rule({ match = { namespace = "proscenio:volumeMixer" }, ignore_alpha = 1})
 hl.layer_rule({ match = { namespace = "proscenio:reloadPopup" }, animation = "slide"})
 hl.layer_rule({ match = { namespace = "proscenio:regionSelector" }, no_anim = true})
 hl.layer_rule({ match = { namespace = "proscenio:screenshot" }, no_anim = true})
