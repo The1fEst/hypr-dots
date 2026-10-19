@@ -64,6 +64,13 @@ installed program of the list in the variable. The other app variables only use 
 app starts in its own `app-<desktop id>-<random>.scope`, the unit Plasma System Monitor lists
 under Applications.
 
+The shell writes what its settings change into `~/.config/hypr/settings/`, which `hyprland.lua`
+loads last. One file there is loaded earlier: `hyprland/keybinds.lua` reads
+`settings/workspaces.lua`, the workspace group size the shell takes from the bar's **Workspaces
+shown**, before it binds Super with a number key for each workspace of a group, up to 0 for the
+tenth. Until the shell writes that file, the size is `workspaceGroupSize` from
+`hyprland/variables.lua`, 10, or from `custom/variables.lua`.
+
 The session's units are `proscenio`, `hypridle`, `cliphist-text`, `cliphist-image`,
 `wl-clip-persist` and the `hypr-dots-check` timer, all wanted by `hyprland-session.target`.
 

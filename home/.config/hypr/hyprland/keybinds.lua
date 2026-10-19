@@ -3,6 +3,9 @@ require("hyprland.variables")
 if is_file_exists(HOME .. "/.config/hypr/custom/variables.lua") then
     require("custom.variables")
 end
+if is_file_exists(HOME .. "/.config/hypr/settings/workspaces.lua") then
+    require("settings.workspaces")
+end
 
 local workspaceNumberKeys = math.min(workspaceGroupSize, 10)
 
