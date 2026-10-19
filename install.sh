@@ -38,7 +38,6 @@ GENERATED=(
 )
 
 SEEDED=(
-  .config/btop/btop.conf
   .config/darklyrc
   .config/dolphinrc
   .config/fontconfig/fonts.conf

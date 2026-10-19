@@ -38,9 +38,8 @@ The shell's PKGBUILD is downloaded into `~/.cache/proscenio/package` and builds 
   colors matugen writes into `~/.config/hypr/hyprland/colors.lua` and
   `~/.config/hypr/hyprlock/colors.conf`.
 - **Seeded**: `~/.config/hypr/custom`, `fontconfig/fonts.conf`, `kdeglobals`, `dolphinrc`,
-  `darklyrc`, `btop/btop.conf` and `~/.local/state/dolphinstaterc` are copied only when they do not
-  exist yet, since the apps and the machine's own Hyprland tweaks change them. `btop.conf` sets the
-  `TTY` theme, which draws with the terminal's colors and so follows the wallpaper.
+  `darklyrc` and `~/.local/state/dolphinstaterc` are copied only when they do not exist yet, since
+  the apps and the machine's own Hyprland tweaks change them.
 
 A change made in `home/` reaches `$HOME` on the next `./install.sh configs`. A change made in
 `$HOME` shows in `./install.sh diff` and is overwritten by the next `configs`, after its backup.

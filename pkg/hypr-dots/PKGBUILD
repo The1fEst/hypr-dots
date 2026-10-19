@@ -1,6 +1,6 @@
 pkgname=hypr-dots
 pkgver=1.0
-pkgrel=2
+pkgrel=3
 pkgdesc='Everything the hypr-dots configs and the proscenio shell run on'
 arch=(any)
 license=(GPL-3.0-only)
@@ -16,7 +16,6 @@ depends=(
   bluez-utils
   brave-origin-bin
   brightnessctl
-  btop
   cava
   cliphist
   coreutils
@@ -51,6 +50,7 @@ depends=(
   libpulse
   libqalculate
   matugen
+  mission-center
   networkmanager
   noto-fonts-cjk
   otf-space-grotesk

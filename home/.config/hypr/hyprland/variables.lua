@@ -12,6 +12,6 @@ textEditor = "~/.config/hypr/hyprland/scripts/launch_first_available.sh 'kate' '
 volumeMixer = "~/.config/hypr/hyprland/scripts/launch_first_available.sh 'pavucontrol-qt' 'pavucontrol'"
 settingsApp = "proscenio ipc call settings open"
 welcomeApp = "proscenio ipc call welcome open"
-taskManager = "~/.config/hypr/hyprland/scripts/launch_first_available.sh 'gnome-system-monitor' 'plasma-systemmonitor --page-name Processes' 'command -v btop && kitty -1 fish -c btop'"
+taskManager = "~/.config/hypr/hyprland/scripts/launch_first_available.sh 'missioncenter' 'gnome-system-monitor' 'plasma-systemmonitor --page-name Processes'"
 
 workspaceGroupSize = 10
