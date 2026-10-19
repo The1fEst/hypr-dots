@@ -21,6 +21,7 @@ runs every step in order. Each step also runs on its own, and running one again 
 |---|---|
 | `./install.sh packages` | installs `paru` if it is missing, builds and installs the shell from proscenio's `packaging/PKGBUILD` and the `hypr-dots` meta package from `pkg/`, and removes the `illogical-impulse-*` packages it replaces |
 | `./install.sh configs` | copies the configs in `home/` into `$HOME`, enables the session's user units and records the commit it installed |
+| `./install.sh update` | rebuilds and installs the `hypr-dots` meta package when the installed one is not the `pkgver-pkgrel` of `pkg/hypr-dots/PKGBUILD`, then runs `configs` |
 | `./install.sh system` | adds the user to `video`, `i2c` and `input`, loads `i2c-dev`, enables ydotool, Bluetooth and NetworkManager, sets the default apps, the GTK font and dark scheme and the Darkly Qt style, and installs Google Sans and Google Sans Flex |
 | `./install.sh diff` | shows how the configs in `$HOME` differ from `home/` |
 
@@ -56,7 +57,7 @@ The session's units are `proscenio`, `hypridle`, `cliphist-text`, `cliphist-imag
 minutes into the session and every six hours after, `hypr-dots-check.timer` runs
 `~/.local/bin/hypr-dots-check`, which fetches the clone's upstream branch and counts the commits it
 has past the installed one. When there are any, it notifies once for each new upstream head, with
-an **Update** action that opens kitty on `git pull --ff-only` and `./install.sh configs` in the
+an **Update** action that opens kitty on `git pull --ff-only` and `./install.sh update` in the
 clone. A clone with no upstream branch, or no network, is left alone.
 
 ## License

@@ -56,11 +56,13 @@ UNITS=(
 )
 
 usage() {
-  echo "usage: $0 [all|packages|configs|system|diff]"
+  echo "usage: $0 [all|packages|configs|system|update|diff]"
   echo "  packages  paru, the proscenio package and the hypr-dots meta package"
   echo "  configs   copies the configs in home/ into \$HOME, enables the session units and"
   echo "            records the commit installed, for hypr-dots-check"
   echo "  system    groups, services, default apps, GTK and Qt settings, fonts"
+  echo "  update    rebuilds the meta package when the installed one is not the version"
+  echo "            pkg/hypr-dots builds, then runs configs"
   echo "  diff      shows how the configs in \$HOME differ from home/"
 }
 
@@ -102,6 +104,21 @@ remove_fork_packages() {
   if ((${#old[@]})); then
     sudo pacman -Rdd --noconfirm "${old[@]}"
   fi
+}
+
+is_meta_package_outdated() {
+  local installed wanted
+  installed=$(pacman -Q hypr-dots 2>/dev/null | cut -d' ' -f2) || true
+  wanted=$(source "$REPO/pkg/hypr-dots/PKGBUILD" && echo "${epoch:+$epoch:}$pkgver-$pkgrel")
+  [[ $installed != "$wanted" ]]
+}
+
+update() {
+  if is_meta_package_outdated; then
+    install_depends "$REPO/pkg/hypr-dots"
+    build_pkgbuild "$REPO/pkg/hypr-dots"
+  fi
+  configs
 }
 
 packages() {
@@ -343,7 +360,7 @@ case ${1:-all} in
     configs
     system
     ;;
-  packages | configs | system)
+  packages | configs | system | update)
     "$1"
     ;;
   diff)
