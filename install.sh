@@ -42,6 +42,7 @@ SEEDED=(
   .config/fontconfig/fonts.conf
   .config/hypr/custom
   .config/hypr/hypridle.conf
+  .config/hypr/settings/hyprlock.conf
   .config/kdeglobals
   .local/state/dolphinstaterc
 )
