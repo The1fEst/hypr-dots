@@ -11,7 +11,6 @@ MANAGED=(
   .config/code-flags.conf
   .config/fish/config.fish
   .config/fuzzel/fuzzel.ini
-  .config/hypr/hypridle.conf
   .config/hypr/hyprland
   .config/hypr/hyprland.lua
   .config/hypr/hyprlock
@@ -42,6 +41,7 @@ SEEDED=(
   .config/dolphinrc
   .config/fontconfig/fonts.conf
   .config/hypr/custom
+  .config/hypr/hypridle.conf
   .config/kdeglobals
   .local/state/dolphinstaterc
 )

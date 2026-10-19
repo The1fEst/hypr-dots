@@ -32,15 +32,15 @@ The shell's PKGBUILD is downloaded into `~/.cache/proscenio/package` and builds 
 
 `configs` copies two kinds of file:
 
-- **Managed**: Hyprland, hyprlock, hypridle, fish, kitty, starship, fuzzel, wlogout, matugen, the
+- **Managed**: Hyprland, hyprlock, fish, kitty, starship, fuzzel, wlogout, matugen, the
   Hyprland portal choice, the VS Code flags and the session's systemd user units. A copy in `$HOME`
   that differs from `home/` is saved under `~/.local/state/hypr-dots/backup/<time>/` first, then
   replaced. Directories are mirrored, so a file removed from `home/` goes from `$HOME` too, except the
   colors matugen writes into `~/.config/hypr/hyprland/colors.lua` and
   `~/.config/hypr/hyprlock/colors.conf`.
-- **Seeded**: `~/.config/hypr/custom`, `fontconfig/fonts.conf`, `kdeglobals`, `dolphinrc`,
-  `darklyrc` and `~/.local/state/dolphinstaterc` are copied only when they do not exist yet, since
-  the apps and the machine's own Hyprland tweaks change them.
+- **Seeded**: `~/.config/hypr/custom`, `hypridle.conf`, `fontconfig/fonts.conf`, `kdeglobals`,
+  `dolphinrc`, `darklyrc` and `~/.local/state/dolphinstaterc` are copied only when they do not exist
+  yet, since the apps, the shell's Lock settings and the machine's own Hyprland tweaks change them.
 
 A change made in `home/` reaches `$HOME` on the next `./install.sh configs`. A change made in
 `$HOME` shows in `./install.sh diff` and is overwritten by the next `configs`, after its backup.
