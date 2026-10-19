@@ -67,11 +67,9 @@ app starts in its own `app-<desktop id>-<random>.scope`, the unit Plasma System 
 under Applications.
 
 The shell writes what its settings change into `~/.config/hypr/settings/`, which `hyprland.lua`
-loads last. One file there is loaded earlier: `hyprland/keybinds.lua` reads
-`settings/workspaces.lua`, the workspace group size the shell takes from the bar's **Workspaces
-shown**, before it binds Super with a number key for each workspace of a group, up to 0 for the
-tenth. Until the shell writes that file, the size is `workspaceGroupSize` from
-`hyprland/variables.lua`, 10, or from `custom/variables.lua`.
+loads last. The shell writes the Super and Super + Alt number-key binds and the Ctrl + Super arrow
+binds of the focused display's group of workspaces into `settings/binds.lua`, so this config binds
+none of them.
 
 The session's units are `proscenio`, `hypridle`, `cliphist-text`, `cliphist-image`,
 `wl-clip-persist` and the `hypr-dots-check` timer, all wanted by `hyprland-session.target`.

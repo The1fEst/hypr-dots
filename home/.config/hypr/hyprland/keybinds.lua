@@ -3,11 +3,6 @@ require("hyprland.variables")
 if is_file_exists(HOME .. "/.config/hypr/custom/variables.lua") then
     require("custom.variables")
 end
-if is_file_exists(HOME .. "/.config/hypr/settings/workspaces.lua") then
-    require("settings.workspaces")
-end
-
-local workspaceNumberKeys = math.min(workspaceGroupSize, 10)
 
 local hyprScripts = "$HOME/.config/hypr/hyprland/scripts"
 local function shellIpc(call)
@@ -237,76 +232,17 @@ hl.bind("SUPER + ALT + F", hl.dsp.window.fullscreen_state({ internal = 0, client
     { description = "Window: Fullscreen spoof" })
 hl.bind("SUPER + P", hl.dsp.window.pin(), { description = "Window: Pin" })
 
---#/# bind = SUPER+ALT, Hash,, -- Send to workspace -- (1, 2, 3,...)
-for i = 1, workspaceNumberKeys do
-    hl.bind("SUPER + ALT + " .. (i % 10), function()
-        hl.dispatch(hl.dsp.window.move({ workspace = workspace_in_group(i), follow = false }))
-    end, { description = "Window: Send to workspace " .. i })
-end
---# We also use raw keycodes because some keyboard layouts register number keys as different chars. The codes can be verified with `wev`
--- for i = 1, 10 do
---     local numberkey = { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 }
---     hl.bind("SUPER + ALT + code:" .. numberkey[i], function()
---         hl.dispatch(hl.dsp.window.move({ workspace = workspace_in_group(i), follow = false }))
---     end)
--- end
---# keypad numbers
-for i = 1, workspaceNumberKeys do
-    local numpadkey = { 87, 88, 89, 83, 84, 85, 79, 80, 81, 90 }
-    hl.bind("SUPER + ALT + code:" .. numpadkey[i], function()
-        hl.dispatch(hl.dsp.window.move({ workspace = workspace_in_group(i), follow = false }))
-    end, { description = "Window: Send to workspace " .. i })
-end
-
 hl.bind("SUPER + ALT + S",
     hl.dsp.window.move({ workspace = "special:magic", follow = false }),
     { description = "Window: Send to scratchpad silently" })
 
 --##! Workspace
 --# Switching
---#/# bind = SUPER, Hash,, -- Focus workspace -- (1, 2, 3,...)
-for i = 1, workspaceNumberKeys do
-    hl.bind("SUPER + " .. (i % 10), function()
-        hl.dispatch(hl.dsp.focus({ workspace = workspace_in_group(i) }))
-    end, { description = "Workspace: Focus " .. i })
-end
---# keypad numbers
-for i = 1, workspaceNumberKeys do
-    local numpadkey = { 87, 88, 89, 83, 84, 85, 79, 80, 81, 90 }
-    hl.bind("SUPER + code:" .. numpadkey[i], function()
-        hl.dispatch(hl.dsp.focus({ workspace = workspace_in_group(i) }))
-    end, { description = "Workspace: Focus " .. i })
-end
-
---#/# bind = CTRL+SUPER, ←/→,, -- Focus left/right adjacent workspace
---#/# bind = CTRL+SUPER+ALT, ←/→,, -- Move window to adjacent workspace and follow
--- Wraps inside the group of `workspaceGroupSize` workspaces the focused one belongs to,
--- so a monitor with its own group keeps its arrows to itself.
-local function workspace_group_cycle(delta)
-    local curr = hl.get_active_workspace().id
-    local base = math.floor((curr - 1) / workspaceGroupSize) * workspaceGroupSize
-    local offset = ((curr - base - 1 + delta) % workspaceGroupSize) + 1
-    return base + offset
-end
-
-for _, side in ipairs({ { "Left", -1, "left" }, { "H", -1, "left" }, { "Right", 1, "right" }, { "L", 1, "right" } }) do
-    hl.bind("CTRL + SUPER + " .. side[1], function()
-        hl.dispatch(hl.dsp.focus({ workspace = workspace_group_cycle(side[2]) }))
-    end, { description = "Workspace: Focus " .. side[3] .. " adjacent" })
-    hl.bind("CTRL + SUPER + ALT + " .. side[1], function()
-        hl.dispatch(hl.dsp.window.move({ workspace = workspace_group_cycle(side[2]), follow = true }))
-    end, { description = "Window: Send to " .. side[3] .. " adjacent workspace and follow" })
-end
 --## Special
 hl.bind("SUPER + S", hl.dsp.workspace.toggle_special("magic"), { description = "Workspace: Toggle scratchpad" })
 hl.bind("CTRL + SUPER + S", hl.dsp.workspace.toggle_special("magic"), { description = "Workspace: Toggle scratchpad" })
 hl.bind("SUPER + SHIFT + S", hl.dsp.window.move({ workspace = "special:magic", follow = true }),
     { description = "Window: Send to scratchpad" })
-for i = 1, 2 do
-    local key = { "Up", "Down" }
-    local prefix = { "r-5", "r+5" }
-    hl.bind("CTRL + SUPER + " .. key[i], hl.dsp.focus({ workspace = prefix[i] }))
-end
 
 --##! Virtual machines
 hl.define_submap("virtual-machine", function()

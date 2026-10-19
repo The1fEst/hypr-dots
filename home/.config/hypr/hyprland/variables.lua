@@ -13,5 +13,3 @@ volumeMixer = "~/.config/hypr/hyprland/scripts/launch_first_available.sh 'pavuco
 settingsApp = "proscenio ipc call settings open"
 welcomeApp = "proscenio ipc call welcome open"
 taskManager = "~/.config/hypr/hyprland/scripts/launch_first_available.sh 'missioncenter' 'gnome-system-monitor' 'plasma-systemmonitor --page-name Processes'"
-
-workspaceGroupSize = 10
