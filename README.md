@@ -48,6 +48,22 @@ A change made in `home/` reaches `$HOME` on the next `./install.sh configs`. A c
 `hyprland.lua` loads each `~/.config/hypr/custom/*.lua` after the matching part of the shared config,
 so that folder is the place for one machine's monitors, binds and rules.
 
+The app variables in `hyprland/variables.lua` start their programs through
+`hyprland/scripts/launch_first_available.sh`. Four of them follow the defaults chosen in the
+shell's Settings → Apps, looked up when the key is pressed:
+
+| Variable | Bind | Default |
+|---|---|---|
+| `terminal` | `SUPER + Return`, `SUPER + T` | `terminal` under `[apps]` in `~/.config/proscenio/config.toml` |
+| `fileManager` | `SUPER + E` | the app for `inode/directory` |
+| `textEditor` | `SUPER + X` | the app for `text/plain` |
+| `browser` | none | the app for `x-scheme-handler/https` |
+
+When no default is set, or its program or desktop file is missing, the script starts the first
+installed program of the list in the variable. The other app variables only use their lists. Each
+app starts in its own `app-<desktop id>-<random>.scope`, the unit Plasma System Monitor lists
+under Applications.
+
 The session's units are `proscenio`, `hypridle`, `cliphist-text`, `cliphist-image`,
 `wl-clip-persist` and the `hypr-dots-check` timer, all wanted by `hyprland-session.target`.
 
