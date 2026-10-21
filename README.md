@@ -23,6 +23,7 @@ runs every step in order. Each step also runs on its own, and running one again 
 | `./install.sh configs` | copies the configs in `home/` into `$HOME`, enables the session's user units and records the commit it installed |
 | `./install.sh update` | rebuilds and installs the `hypr-dots` meta package when the installed one is not the `pkgver-pkgrel` of `pkg/hypr-dots/PKGBUILD`, then runs `configs` |
 | `./install.sh system` | adds the user to `video`, `i2c` and `input`, loads `i2c-dev`, enables ydotool, Bluetooth and NetworkManager, sets the default apps, the GTK font and dark scheme and the Darkly Qt style, and installs Google Sans and Google Sans Flex |
+| `./install.sh shell` | makes fish the login shell, which kitty starts |
 | `./install.sh diff` | shows how the configs in `$HOME` differ from `home/` |
 
 The shell's PKGBUILD is downloaded into `~/.cache/proscenio/package` and builds `main` of

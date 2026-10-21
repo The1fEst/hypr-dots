@@ -57,11 +57,12 @@ UNITS=(
 )
 
 usage() {
-  echo "usage: $0 [all|packages|configs|system|update|diff]"
+  echo "usage: $0 [all|packages|configs|system|shell|update|diff]"
   echo "  packages  paru, the proscenio package and the hypr-dots meta package"
   echo "  configs   copies the configs in home/ into \$HOME, enables the session units and"
   echo "            records the commit installed, for hypr-dots-check"
   echo "  system    groups, services, default apps, GTK and Qt settings, fonts"
+  echo "  shell     makes fish the login shell"
   echo "  update    rebuilds the meta package when the installed one is not the version"
   echo "            pkg/hypr-dots builds, then runs configs"
   echo "  diff      shows how the configs in \$HOME differ from home/"
@@ -355,13 +356,18 @@ system() {
   install_google_sans_flex
 }
 
+shell() {
+  sudo chsh -s /usr/bin/fish "$(whoami)"
+}
+
 case ${1:-all} in
   all)
     packages
     configs
     system
+    shell
     ;;
-  packages | configs | system | update)
+  packages | configs | system | shell | update)
     "$1"
     ;;
   diff)
