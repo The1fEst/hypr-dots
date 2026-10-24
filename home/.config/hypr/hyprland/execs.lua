@@ -9,6 +9,7 @@ hl.on("hyprland.start", function ()
     hl.exec_cmd(
         "dbus-update-activation-environment --systemd --all && systemctl --user reset-failed && systemctl --user start hyprland-session.target proscenio.service")
     hl.exec_cmd("$HOME/.config/hypr/custom/scripts/__restore_video_wallpaper.sh")
+    hl.exec_cmd("ls /var/cache/hyprpm/\"$(id -un)\"/*/state.toml >/dev/null 2>&1 && hyprpm reload")
 
     -- Cursor: follow XCURSOR_* so custom/env.lua wins instead of racing this line
     hl.exec_cmd("hyprctl setcursor \"${XCURSOR_THEME:-Bibata-Modern-Ice}\" \"${XCURSOR_SIZE:-36}\"")

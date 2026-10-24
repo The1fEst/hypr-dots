@@ -6,6 +6,8 @@ STATE=$HOME/.local/state/hypr-dots
 BACKUP=$STATE/backup/$(date +%Y%m%d-%H%M%S)
 SHELL_PKGBUILD=https://raw.githubusercontent.com/The1fEst/proscenio/main/packaging/PKGBUILD
 SHELL_PACKAGE=$HOME/.cache/proscenio/package
+PLUGINS_URL=https://github.com/hyprwm/hyprland-plugins
+PLUGINS_NAME=hyprland-plugins
 
 MANAGED=(
   .config/code-flags.conf
@@ -57,14 +59,17 @@ UNITS=(
 )
 
 usage() {
-  echo "usage: $0 [all|packages|configs|system|shell|update|diff]"
+  echo "usage: $0 [all|packages|configs|system|shell|plugins|update|diff]"
   echo "  packages  paru, the proscenio package and the hypr-dots meta package"
   echo "  configs   copies the configs in home/ into \$HOME, enables the session units and"
   echo "            records the commit installed, for hypr-dots-check"
   echo "  system    groups, services, default apps, GTK and Qt settings, fonts"
   echo "  shell     makes fish the login shell"
+  echo "  plugins   adds the hyprland-plugins repository to hyprpm and enables hyprbars;"
+  echo "            runs inside the Hyprland session"
   echo "  update    rebuilds the meta package when the installed one is not the version"
-  echo "            pkg/hypr-dots builds, then runs configs"
+  echo "            pkg/hypr-dots builds, runs configs, then hyprpm update when the plugin"
+  echo "            repository is added"
   echo "  diff      shows how the configs in \$HOME differ from home/"
 }
 
@@ -115,12 +120,19 @@ is_meta_package_outdated() {
   [[ $installed != "$wanted" ]]
 }
 
+has_plugin_repository() {
+  [[ -f /var/cache/hyprpm/$(whoami)/$PLUGINS_NAME/state.toml ]]
+}
+
 update() {
   if is_meta_package_outdated; then
     install_depends "$REPO/pkg/hypr-dots"
     build_pkgbuild "$REPO/pkg/hypr-dots"
   fi
   configs
+  if has_plugin_repository; then
+    hyprpm update || echo "hyprpm update did not finish, ./install.sh plugins runs it again" >&2
+  fi
 }
 
 packages() {
@@ -360,14 +372,27 @@ shell() {
   sudo chsh -s /usr/bin/fish "$(whoami)"
 }
 
+plugins() {
+  if [[ -z ${HYPRLAND_INSTANCE_SIGNATURE:-} ]]; then
+    echo "hyprpm works on the running Hyprland, run ./install.sh plugins inside the session" >&2
+    return 1
+  fi
+  hyprpm update
+  if ! has_plugin_repository; then
+    hyprpm add "$PLUGINS_URL" <<<y
+  fi
+  hyprpm enable hyprbars
+}
+
 case ${1:-all} in
   all)
     packages
     configs
     system
     shell
+    plugins
     ;;
-  packages | configs | system | shell | update)
+  packages | configs | system | shell | plugins | update)
     "$1"
     ;;
   diff)

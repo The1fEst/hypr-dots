@@ -21,9 +21,10 @@ runs every step in order. Each step also runs on its own, and running one again 
 |---|---|
 | `./install.sh packages` | installs `paru` if it is missing, builds and installs the shell from proscenio's `packaging/PKGBUILD` and the `hypr-dots` meta package from `pkg/`, and removes the `illogical-impulse-*` packages it replaces |
 | `./install.sh configs` | copies the configs in `home/` into `$HOME`, enables the session's user units and records the commit it installed |
-| `./install.sh update` | rebuilds and installs the `hypr-dots` meta package when the installed one is not the `pkgver-pkgrel` of `pkg/hypr-dots/PKGBUILD`, then runs `configs` |
+| `./install.sh update` | rebuilds and installs the `hypr-dots` meta package when the installed one is not the `pkgver-pkgrel` of `pkg/hypr-dots/PKGBUILD`, then runs `configs`, then `hyprpm update` when the plugin repository is added |
 | `./install.sh system` | adds the user to `video`, `i2c` and `input`, loads `i2c-dev`, enables ydotool, Bluetooth and NetworkManager, sets the default apps, the GTK font and dark scheme and the Darkly Qt style, and installs Google Sans and Google Sans Flex |
 | `./install.sh shell` | makes fish the login shell, which kitty starts |
+| `./install.sh plugins` | runs `hyprpm update`, adds the [hyprland-plugins](https://github.com/hyprwm/hyprland-plugins) repository to hyprpm unless it is there, and enables hyprbars; needs the running Hyprland session and `sudo` |
 | `./install.sh diff` | shows how the configs in `$HOME` differ from `home/` |
 
 The shell's PKGBUILD is downloaded into `~/.cache/proscenio/package` and builds `main` of
@@ -74,6 +75,23 @@ none of them.
 
 The session's units are `proscenio`, `hypridle`, `cliphist-text`, `cliphist-image`,
 `wl-clip-persist` and the `hypr-dots-check` timer, all wanted by `hyprland-session.target`.
+
+## Window bars
+
+At the start of the session Hyprland runs `hyprpm reload`, which loads the plugins `plugins` enabled.
+`hyprland/plugins.lua` configures hyprbars when it is loaded and does nothing otherwise, so a
+session without it, before `plugins` ran or after a failed build, starts without errors.
+
+The bars are Material 3 top app bars, 40 px high, on `surface_container` from matugen's colors, with
+the title left-aligned in Google Sans Medium and `on_surface`. The bar takes the window's rounding.
+The buttons are 14 px dots without icons, right to left: close in `error`, maximize
+(`fullscreen 1`) in `tertiary` and minimize in `primary`, which sends the window to the `magic`
+scratchpad that `SUPER + S` toggles. A double click on the bar maximizes.
+
+Only floating windows have a bar, except XWayland menus and popups: a window gets its bar when it is
+floated and loses it when it is tiled. A fullscreen window draws no bar, a maximized one does. The shell's own surfaces are layer surfaces, not windows, and
+have none. After a Hyprland upgrade the plugins are rebuilt by `./install.sh update`, or by
+`./install.sh plugins`, inside the session.
 
 ## Updates
 
