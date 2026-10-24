@@ -11,7 +11,6 @@ border_colors = {
 bar_colors = {
     surface_container = "{{colors.surface_container.default.hex_stripped}}",
     on_surface        = "{{colors.on_surface.default.hex_stripped}}",
-    primary           = "{{colors.primary.default.hex_stripped}}",
     tertiary          = "{{colors.tertiary.default.hex_stripped}}",
     error             = "{{colors.error.default.hex_stripped}}",
 }

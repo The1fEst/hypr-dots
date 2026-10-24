@@ -83,14 +83,14 @@ At the start of the session Hyprland runs `hyprpm reload`, which loads the plugi
 session without it, before `plugins` ran or after a failed build, starts without errors.
 
 The bars are Material 3 top app bars, 40 px high, on `surface_container` from matugen's colors, with
-the title left-aligned in Google Sans Medium and `on_surface`. The bar takes the window's rounding.
-The buttons are 14 px dots without icons, right to left: close in `error`, maximize
-(`fullscreen 1`) in `tertiary` and minimize in `primary`, which sends the window to the `magic`
-scratchpad that `SUPER + S` toggles. A double click on the bar maximizes.
+the title centered in Google Sans Medium and `on_surface`. The bar takes the window's rounding.
+The buttons are 16 px dots without icons, right to left: close in `error` and maximize
+(`fullscreen 1`) in `tertiary`. A double click on the bar maximizes.
 
 Only floating windows have a bar, except XWayland menus and popups: a window gets its bar when it is
-floated and loses it when it is tiled. A fullscreen window draws no bar, a maximized one does. The shell's own surfaces are layer surfaces, not windows, and
-have none. After a Hyprland upgrade the plugins are rebuilt by `./install.sh update`, or by
+floated and loses it when it is tiled. A fullscreen window draws no bar, a maximized one does. The
+shell's own windows, such as Settings, draw their own header and have none, and its layer surfaces
+are not windows. After a Hyprland upgrade the plugins are rebuilt by `./install.sh update`, or by
 `./install.sh plugins`, inside the session.
 
 ## Updates
