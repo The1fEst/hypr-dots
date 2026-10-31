@@ -50,5 +50,11 @@ if settings then
     settings:close()
 end
 
+-- Rules that follow the settings app's main display --
+local main_display = os.getenv("WAYLANDDRV_PRIMARY_MONITOR")
+if main_display then
+    hl.window_rule({ match = { class = "^(gamescope)$" }, monitor = main_display })
+end
+
 -- Shell overrides --
 require("hyprland.shellOverrides.main")
