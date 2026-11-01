@@ -31,9 +31,9 @@ hl.bind("SHIFT + SUPER + ALT + Slash", hl.dsp.exec_cmd(welcomeApp))
 hl.bind("CTRL + SUPER + ALT + Slash", hl.dsp.exec_cmd("xdg-open $HOME/.config/hypr/hyprland/keybinds.lua"),
     { description = "Edit keybinds" })
 
-hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd(shellIpc("brightness increment") .. " || brightnessctl s 5%+"),
+hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd(shellIpc("brightness increment")),
     { locked = true, repeating = true })
-hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd(shellIpc("brightness decrement") .. " || brightnessctl s 5%-"),
+hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd(shellIpc("brightness decrement")),
     { locked = true, repeating = true })
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 2%+ -l 1.5"),
     { locked = true, repeating = true })
