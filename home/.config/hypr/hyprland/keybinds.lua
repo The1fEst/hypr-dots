@@ -35,9 +35,11 @@ hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd(shellIpc("brightness increment"))
     { locked = true, repeating = true })
 hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd(shellIpc("brightness decrement")),
     { locked = true, repeating = true })
-hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 2%+ -l 1.5"),
+hl.bind("XF86AudioRaiseVolume",
+    hl.dsp.exec_cmd(shellIpc("audio increment") .. " || wpctl set-volume @DEFAULT_AUDIO_SINK@ 2%+ -l 1.5"),
     { locked = true, repeating = true })
-hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 2%-"),
+hl.bind("XF86AudioLowerVolume",
+    hl.dsp.exec_cmd(shellIpc("audio decrement") .. " || wpctl set-volume @DEFAULT_AUDIO_SINK@ 2%-"),
     { locked = true, repeating = true })
 
 hl.bind("CTRL + SUPER + T", hl.dsp.global("proscenio:wallpaperSelectorToggle"),
@@ -120,10 +122,9 @@ hl.bind("SUPER + SHIFT + P", hl.dsp.exec_cmd(mediaPlayPauseCommand),
     { locked = true, description = "Media: Play/pause media" })
 hl.bind("XF86AudioPlay", hl.dsp.exec_cmd(mediaPlayPauseCommand),
     { locked = true, description = "Media: Play/pause media" })
-hl.bind("SUPER + SHIFT + M", hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_SINK@ toggle"),
-    { locked = true, description = "Media: Toggle mute" })
-hl.bind("XF86AudioMute", hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_SINK@ toggle"),
-    { locked = true, description = "Media: Toggle mute" })
+local muteCommand = shellIpc("audio toggleMute") .. " || wpctl set-mute @DEFAULT_SINK@ toggle"
+hl.bind("SUPER + SHIFT + M", hl.dsp.exec_cmd(muteCommand), { locked = true, description = "Media: Toggle mute" })
+hl.bind("XF86AudioMute", hl.dsp.exec_cmd(muteCommand), { locked = true, description = "Media: Toggle mute" })
 for _, keys in ipairs({ "ALT + Slash", "XF86AudioMicMute" }) do
     hl.bind(keys, hl.dsp.global("proscenio:micMuteToggle"), { locked = true, description = "Media: Toggle mic" })
     hl.bind(keys, hl.dsp.exec_cmd(shellIsAlive .. " || wpctl set-mute @DEFAULT_SOURCE@ toggle"), { locked = true })
