@@ -126,7 +126,6 @@ hl.layer_rule({ match = { namespace = "proscenio:cheatsheet" }, animation = "sli
 hl.layer_rule({ match = { namespace = "proscenio:dock" }, animation = "slide bottom"})
 hl.layer_rule({ match = { namespace = "proscenio:screenCorners" }, animation = "popin 120%"})
 hl.layer_rule({ match = { namespace = "proscenio:lockWindowPusher" }, no_anim = true})
-hl.layer_rule({ match = { namespace = "proscenio:notepad" }, animation = "slide left"})
 hl.layer_rule({ match = { namespace = "proscenio:notificationPopup" }, animation = "fade"})
 hl.layer_rule({ match = { namespace = "proscenio:overlay" }, no_anim = true})
 hl.layer_rule({ match = { namespace = "proscenio:overlay" }, ignore_alpha = 1})
