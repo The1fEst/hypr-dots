@@ -6,7 +6,7 @@ StartLimitIntervalSec=300
 StartLimitBurst=20
 
 [Service]
-Type=simple
+Type=notify
 ExecStart=/usr/bin/proscenio
 Restart=on-failure
 RestartSec=2
