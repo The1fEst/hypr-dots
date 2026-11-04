@@ -25,7 +25,7 @@ for role, color in pairs(bar_colors or {}) do
     palette[role] = color
 end
 
-local function rgb(role)
+local function format_color(role)
     return "rgb(" .. palette[role] .. ")"
 end
 
@@ -36,17 +36,17 @@ hl.config({
             title_font            = "Google Sans",
             title_size            = 14,
             title_weight          = "medium",
-            bar_color             = rgb("surface_container"),
-            title_color           = rgb("on_surface"),
-            inactive_bar_color    = rgb("surface_container_low"),
-            inactive_title_color  = rgb("on_surface_variant"),
-            inactive_button_color = rgb("surface_container_highest"),
-            close_color           = rgb("error"),
-            close_icon_color      = rgb("on_error"),
-            minimize_color        = rgb("tertiary"),
-            minimize_icon_color   = rgb("on_tertiary"),
-            maximize_color        = rgb("primary"),
-            maximize_icon_color   = rgb("on_primary"),
+            bar_color             = format_color("surface_container"),
+            title_color           = format_color("on_surface"),
+            inactive_bar_color    = format_color("surface_container_low"),
+            inactive_title_color  = format_color("on_surface_variant"),
+            inactive_button_color = format_color("surface_container_highest"),
+            close_color           = format_color("error"),
+            close_icon_color      = format_color("on_error"),
+            minimize_color        = format_color("tertiary"),
+            minimize_icon_color   = format_color("on_tertiary"),
+            maximize_color        = format_color("primary"),
+            maximize_icon_color   = format_color("on_primary"),
         },
     },
 })

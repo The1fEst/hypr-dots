@@ -93,9 +93,10 @@ There are three buttons with icons: close in `error`, minimize in `tertiary` and
 `surface_container_highest`. A double click on the bar maximizes. The shell's Settings choose which
 side of the bar holds the buttons; the default is the right.
 
-Only floating windows have a bar: a window gets its bar when it is floated and loses it when it is
-tiled. The shell's own windows, such as Settings, draw their own header and have none, and its
-layer surfaces are not windows. After a Hyprland upgrade the plugin is rebuilt by
+Only floating windows have a bar, except XWayland menus and popups: a window gets its bar when it is
+floated and loses it when it is tiled. A fullscreen window draws no bar, a maximized one does. The
+shell's own windows, such as Settings, draw their own header and have none, and its layer surfaces
+are not windows. After a Hyprland upgrade the plugin is rebuilt by
 `./install.sh update`, or by `./install.sh plugins`, inside the session.
 
 ## Updates
