@@ -1,57 +1,55 @@
-if not hl.plugin.hyprbars then
+local is_loaded = false
+for _, plugin in ipairs(hl.get_loaded_plugins()) do
+    if plugin.name == "proscenio_bars" then
+        is_loaded = true
+    end
+end
+if not is_loaded then
     return
 end
 
 local palette = {
-    surface_container = "211F26",
-    on_surface        = "E6E0E9",
-    tertiary          = "EFB8C8",
-    error             = "F2B8B5",
+    surface_container         = "211F26",
+    surface_container_low     = "1D1B20",
+    surface_container_highest = "36343B",
+    on_surface                = "E6E0E9",
+    on_surface_variant        = "CAC4D0",
+    primary                   = "D0BCFF",
+    on_primary                = "381E72",
+    tertiary                  = "EFB8C8",
+    on_tertiary               = "492532",
+    error                     = "F2B8B5",
+    on_error                  = "601410",
 }
 for role, color in pairs(bar_colors or {}) do
     palette[role] = color
 end
 
-local actions = {
-    close    = "hl.dsp.window.close()",
-    maximize = [[hl.dsp.window.fullscreen({ mode = "maximized", action = "toggle" })]],
-}
-
-local function build_command(action)
-    return "hyprctl dispatch '" .. action .. "'"
-end
-
-local function add_button(background, foreground, action)
-    hl.plugin.hyprbars.add_button({
-        bg_color = "rgb(" .. background .. ")",
-        fg_color = "rgb(" .. foreground .. ")",
-        size     = 16,
-        icon     = "",
-        action   = build_command(action),
-    })
+local function rgb(role)
+    return "rgb(" .. palette[role] .. ")"
 end
 
 hl.config({
     plugin = {
-        hyprbars = {
-            bar_height                 = 40,
-            bar_color                  = "rgb(" .. palette.surface_container .. ")",
-            col                        = { text = "rgb(" .. palette.on_surface .. ")" },
-            bar_text_font              = "Google Sans",
-            bar_text_size              = 14,
-            bar_text_weight            = "medium",
-            bar_text_align             = "center",
-            bar_padding                = 16,
-            bar_button_padding         = 8,
-            bar_precedence_over_border = true,
-            on_double_click            = build_command(actions.maximize),
+        proscenio_bars = {
+            bar_height            = 40,
+            title_font            = "Google Sans",
+            title_size            = 14,
+            title_weight          = "medium",
+            bar_color             = rgb("surface_container"),
+            title_color           = rgb("on_surface"),
+            inactive_bar_color    = rgb("surface_container_low"),
+            inactive_title_color  = rgb("on_surface_variant"),
+            inactive_button_color = rgb("surface_container_highest"),
+            close_color           = rgb("error"),
+            close_icon_color      = rgb("on_error"),
+            minimize_color        = rgb("tertiary"),
+            minimize_icon_color   = rgb("on_tertiary"),
+            maximize_color        = rgb("primary"),
+            maximize_icon_color   = rgb("on_primary"),
         },
     },
 })
 
-add_button(palette.error, palette.surface_container, actions.close)
-add_button(palette.tertiary, palette.surface_container, actions.maximize)
-
-hl.window_rule({ match = { float = false }, ["hyprbars:no_bar"] = true })
-hl.window_rule({ match = { class = "^()$", title = "^()$" }, ["hyprbars:no_bar"] = true })
-hl.window_rule({ match = { class = "^(dev\\.fEst\\.Proscenio)$" }, ["hyprbars:no_bar"] = true })
+hl.window_rule({ match = { class = "^()$", title = "^()$" }, ["proscenio_bars:no_bar"] = true })
+hl.window_rule({ match = { class = "^(dev\\.fEst\\.Proscenio)$" }, ["proscenio_bars:no_bar"] = true })

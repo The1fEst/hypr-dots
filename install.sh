@@ -6,8 +6,8 @@ STATE=$HOME/.local/state/hypr-dots
 BACKUP=$STATE/backup/$(date +%Y%m%d-%H%M%S)
 SHELL_PKGBUILD=https://raw.githubusercontent.com/The1fEst/proscenio/main/packaging/PKGBUILD
 SHELL_PACKAGE=$HOME/.cache/proscenio/package
-PLUGINS_URL=https://github.com/hyprwm/hyprland-plugins
-PLUGINS_NAME=hyprland-plugins
+PLUGINS_URL=https://github.com/The1fEst/proscenio
+PLUGINS_NAME=proscenio
 
 MANAGED=(
   .config/code-flags.conf
@@ -65,7 +65,7 @@ usage() {
   echo "            records the commit installed, for hypr-dots-check"
   echo "  system    groups, services, default apps, GTK and Qt settings, fonts"
   echo "  shell     makes fish the login shell"
-  echo "  plugins   adds the hyprland-plugins repository to hyprpm and enables hyprbars;"
+  echo "  plugins   adds the proscenio repository to hyprpm and enables proscenio_bars;"
   echo "            runs inside the Hyprland session"
   echo "  update    rebuilds the meta package when the installed one is not the version"
   echo "            pkg/hypr-dots builds, runs configs, then hyprpm update when the plugin"
@@ -381,7 +381,7 @@ plugins() {
   if ! has_plugin_repository; then
     hyprpm add "$PLUGINS_URL" <<<y
   fi
-  hyprpm enable hyprbars
+  hyprpm enable proscenio_bars
 }
 
 case ${1:-all} in
