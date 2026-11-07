@@ -18,7 +18,6 @@ require("hyprland.rules")
 if is_file_exists(HOME .. "/.config/hypr/hyprland/colors.lua") then
     require("hyprland.colors")
 end
-require("hyprland.plugins")
 require("hyprland.keybinds")
 if is_file_exists(HOME .. "/.config/hypr/custom/keybinds.lua") then
     require("custom.keybinds")

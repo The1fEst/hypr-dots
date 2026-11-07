@@ -81,30 +81,14 @@ The session's units are `proscenio`, `hypridle`, `cliphist-text`, `cliphist-imag
 
 ## Window bars
 
-At the start of the session Hyprland runs `hyprpm reload`, which loads the plugins `plugins` enabled.
-`hyprland/plugins.lua` configures `proscenio_bars` when it is loaded and does nothing otherwise, so
-a session without it, before `plugins` ran or after a failed build, starts without errors. The
-plugin is `plugin/` of the [proscenio](https://github.com/The1fEst/proscenio) repository, which
-hyprpm builds against the installed Hyprland.
+The window bars are drawn by the `proscenio_bars` Hyprland plugin from the
+[proscenio](https://github.com/The1fEst/proscenio) repository, which hyprpm builds against the installed
+Hyprland. `./install.sh plugins` adds the repository and enables the plugin, and proscenio loads it at
+session start. Which windows get a bar, the buttons, the colors, the window rules and the monocle toggle
+are documented in proscenio's `docs/docs/title-bars.md`. The dots set none of them.
 
-A floating window gets a bar when it asks for server-side decorations, as Qt apps and GTK windows
-without a header bar do. Apps that draw their own title bar get none. `plugins.lua` adds two rules:
-`steam` has no bar, and Hyprland's own `hyprland-*` dialogs always have one.
-
-The bars are Material 3 top app bars, 40 px high, on `surface_container` from matugen's colors, or
-the Qt scheme's `Colors:Header` background when the shell themes Qt apps, with the title centered in
-Google Sans Medium and `on_surface`. The bar sits inside the window border. There are three buttons
-with icons: close in `error`, minimize in `tertiary` and maximize in `primary`, each icon in the
-matching `on_` role. A window that is not focused keeps its bar color and draws its title in
-`on_surface_variant` and its buttons in `surface_container_highest`. A double click on the bar
-maximizes. The shell's Settings choose which
-side of the bar holds the buttons; the default is the right.
-
-Only floating windows have a bar, except XWayland menus and popups: a window gets its bar when it is
-floated and loses it when it is tiled. A fullscreen window draws no bar, a maximized one does. The
-shell's own windows, such as Settings, draw their own header and have none, and its layer surfaces
-are not windows. After a Hyprland upgrade the plugin is rebuilt by
-`./install.sh update`, or by `./install.sh plugins`, inside the session.
+After a Hyprland upgrade, `./install.sh update` rebuilds the plugin with `hyprpm update`. Super + F
+toggles monocle through the plugin when it is loaded, and through the dots' own monocle layout otherwise.
 
 ## Updates
 
