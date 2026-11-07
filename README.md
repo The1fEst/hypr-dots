@@ -87,12 +87,17 @@ a session without it, before `plugins` ran or after a failed build, starts witho
 plugin is `plugin/` of the [proscenio](https://github.com/The1fEst/proscenio) repository, which
 hyprpm builds against the installed Hyprland.
 
-The bars are Material 3 top app bars, 40 px high, on `surface_container` from matugen's colors, with
-the title centered in Google Sans Medium and `on_surface`. The bar sits inside the window border.
-There are three buttons with icons: close in `error`, minimize in `tertiary` and maximize in
-`primary`, each icon in the matching `on_` role. A window that is not focused draws its bar in
-`surface_container_low`, its title in `on_surface_variant` and its buttons in
-`surface_container_highest`. A double click on the bar maximizes. The shell's Settings choose which
+A floating window gets a bar when it asks for server-side decorations, as Qt apps and GTK windows
+without a header bar do. Apps that draw their own title bar get none. `plugins.lua` adds two rules:
+`steam` has no bar, and Hyprland's own `hyprland-*` dialogs always have one.
+
+The bars are Material 3 top app bars, 40 px high, on `surface_container` from matugen's colors, or
+the Qt scheme's `Colors:Header` background when the shell themes Qt apps, with the title centered in
+Google Sans Medium and `on_surface`. The bar sits inside the window border. There are three buttons
+with icons: close in `error`, minimize in `tertiary` and maximize in `primary`, each icon in the
+matching `on_` role. A window that is not focused keeps its bar color and draws its title in
+`on_surface_variant` and its buttons in `surface_container_highest`. A double click on the bar
+maximizes. The shell's Settings choose which
 side of the bar holds the buttons; the default is the right.
 
 Only floating windows have a bar, except XWayland menus and popups: a window gets its bar when it is

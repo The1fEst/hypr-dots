@@ -10,7 +10,6 @@ end
 
 local palette = {
     surface_container         = "211F26",
-    surface_container_low     = "1D1B20",
     surface_container_highest = "36343B",
     on_surface                = "E6E0E9",
     on_surface_variant        = "CAC4D0",
@@ -38,7 +37,7 @@ hl.config({
             title_weight          = "medium",
             bar_color             = format_color("surface_container"),
             title_color           = format_color("on_surface"),
-            inactive_bar_color    = format_color("surface_container_low"),
+            inactive_bar_color    = format_color("surface_container"),
             inactive_title_color  = format_color("on_surface_variant"),
             inactive_button_color = format_color("surface_container_highest"),
             close_color           = format_color("error"),
@@ -53,3 +52,5 @@ hl.config({
 
 hl.window_rule({ match = { class = "^()$", title = "^()$" }, ["proscenio_bars:no_bar"] = true })
 hl.window_rule({ match = { class = "^(dev\\.fEst\\.Proscenio)$" }, ["proscenio_bars:no_bar"] = true })
+hl.window_rule({ match = { class = "^(steam)$" }, ["proscenio_bars:no_bar"] = true })
+hl.window_rule({ match = { class = "^(hyprland-.*)$" }, ["proscenio_bars:force_bar"] = true })

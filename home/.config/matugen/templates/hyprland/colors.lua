@@ -10,7 +10,6 @@ border_colors = {
 
 bar_colors = {
     surface_container         = "{{colors.surface_container.default.hex_stripped}}",
-    surface_container_low     = "{{colors.surface_container_low.default.hex_stripped}}",
     surface_container_highest = "{{colors.surface_container_highest.default.hex_stripped}}",
     on_surface                = "{{colors.on_surface.default.hex_stripped}}",
     on_surface_variant        = "{{colors.on_surface_variant.default.hex_stripped}}",
