@@ -245,6 +245,7 @@ hl.bind("SUPER + S", hl.dsp.workspace.toggle_special("magic"), { description = "
 hl.bind("CTRL + SUPER + S", hl.dsp.workspace.toggle_special("magic"), { description = "Workspace: Toggle scratchpad" })
 hl.bind("SUPER + SHIFT + S", hl.dsp.window.move({ workspace = "special:magic", follow = true }),
     { description = "Window: Send to scratchpad" })
+hl.bind("SUPER + G", hl.dsp.workspace.toggle_special("games"), { description = "Workspace: Toggle games" })
 
 --##! Virtual machines
 hl.define_submap("virtual-machine", function()

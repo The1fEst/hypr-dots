@@ -69,6 +69,10 @@ hl.window_rule({match = {title = ".*\\.exe" }, immediate = true})
 hl.window_rule({match = {title = ".*minecraft.*" }, immediate = true})
 hl.window_rule({match = {class = "^(steam_app).*" }, immediate = true})
 
+-- --- Games ---
+hl.window_rule({match = {class = "^(steam_app).*" }, workspace = "special:games silent"})
+hl.window_rule({match = {class = "^(gamescope)$" }, workspace = "special:games silent"})
+
 -- ######## Workspace rules ########
 hl.workspace_rule({ workspace = "special:special", gaps_out = 30 })
 

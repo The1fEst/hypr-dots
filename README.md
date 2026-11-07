@@ -72,7 +72,9 @@ The shell writes what its settings change into `~/.config/hypr/settings/`, which
 loads last. The shell writes the Super and Super + Alt number-key binds and the Ctrl + Super arrow
 binds of the focused display's group of workspaces into `settings/binds.lua`, so this config binds
 none of them. Gamescope opens on the display chosen as Main display in the shell's Settings →
-Displays, which `settings/displays.lua` holds as `WAYLANDDRV_PRIMARY_MONITOR`.
+Displays, which `settings/displays.lua` holds as `WAYLANDDRV_PRIMARY_MONITOR`. Windows of class
+`steam_app*` and `gamescope` open on the hidden special workspace `games` without taking the
+focus, and Super + G toggles it.
 
 The session's units are `proscenio`, `hypridle`, `cliphist-text`, `cliphist-image`,
 `wl-clip-persist` and the `hypr-dots-check` timer, all wanted by `hyprland-session.target`.
