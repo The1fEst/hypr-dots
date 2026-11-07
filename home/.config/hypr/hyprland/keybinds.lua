@@ -183,8 +183,35 @@ hl.bind("SUPER + Semicolon", hl.dsp.layout("splitratio -0.1"),
 hl.bind("SUPER + Apostrophe", hl.dsp.layout("splitratio +0.1"),
     { repeating = true, description = "Window: Increase split ratio" })
 --# Positioning mode
-hl.bind("SUPER + W", hl.dsp.window.float({ action = "toggle" }), { description = "Window: Toggle floating" })
-hl.bind("SUPER + ALT + Space", hl.dsp.window.float({ action = "toggle" }), { description = "Window: Toggle floating" })
+local FLOATING_OVERSIZE_RATIO = 0.85
+local FLOATING_FALLBACK_RATIO = 0.7
+
+local function fit_floating_length(length, work_length)
+    if length > work_length * FLOATING_OVERSIZE_RATIO then
+        return math.floor(work_length * FLOATING_FALLBACK_RATIO)
+    end
+    return length
+end
+
+local function toggle_floating()
+    hl.dispatch(hl.dsp.window.float({ action = "toggle" }))
+    local window = hl.get_active_window()
+    if not window or not window.floating then
+        return
+    end
+    local monitor = window.monitor
+    local reserved = monitor.reserved
+    local width = fit_floating_length(window.size.x, monitor.size.width / monitor.scale - reserved.left - reserved.right)
+    local height = fit_floating_length(window.size.y, monitor.size.height / monitor.scale - reserved.top - reserved.bottom)
+    if width == window.size.x and height == window.size.y then
+        return
+    end
+    hl.dispatch(hl.dsp.window.resize({ x = width, y = height }))
+    hl.dispatch(hl.dsp.window.center())
+end
+
+hl.bind("SUPER + W", toggle_floating, { description = "Window: Toggle floating" })
+hl.bind("SUPER + ALT + Space", toggle_floating, { description = "Window: Toggle floating" })
 hl.bind("SUPER + J", hl.dsp.layout("togglesplit"), { description = "Window: Toggle split" })
 hl.bind("SUPER + D", hl.dsp.window.fullscreen({ mode = "fullscreen", action = "toggle" }),
     { description = "Window: Fullscreen" })
