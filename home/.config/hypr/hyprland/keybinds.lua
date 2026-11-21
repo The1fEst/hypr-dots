@@ -142,8 +142,15 @@ hl.bind("SUPER + mouse:273", hl.dsp.window.resize(), { mouse = true, description
 for i = 1, 4 do
     local arrowkey = { "Left", "Right", "Up", "Down" }
     local focusdir = { "l", "r", "u", "d" }
-    hl.bind("SUPER + " .. arrowkey[i], hl.dsp.focus({ direction = focusdir[i] }),
-        { description = "Window: Focus " .. arrowkey[i] })
+    hl.bind("SUPER + " .. arrowkey[i], function()
+        local ws = hl.get_active_workspace()
+        local is_sideways = focusdir[i] == "l" or focusdir[i] == "r"
+        if is_sideways and ws and ws.tiled_layout == "scrolling" then
+            hl.dispatch(hl.dsp.focus({ monitor = focusdir[i] }))
+        else
+            hl.dispatch(hl.dsp.focus({ direction = focusdir[i] }))
+        end
+    end, { description = "Window: Focus " .. arrowkey[i] })
 end
 for i = 1, 2 do
     local arrowkey = { "BracketLeft", "BracketRight" }
