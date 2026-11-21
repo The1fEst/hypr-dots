@@ -215,10 +215,25 @@ end
 
 local function cycle_windows(prev)
     local ws = hl.get_active_workspace()
-    if ws and ws.tiled_layout == "scrolling" then
-        hl.dispatch(hl.dsp.layout(prev and "focus l" or "focus r"))
-    else
+    if not ws or ws.tiled_layout ~= "scrolling" then
         hl.dispatch(hl.dsp.window.cycle_next({ prev = prev }))
+        return
+    end
+    local window_before = hl.get_active_window()
+    hl.dispatch(hl.dsp.layout(prev and "focus l" or "focus r"))
+    local window_after = hl.get_active_window()
+    if not window_before or not window_after or window_after.address ~= window_before.address then
+        return
+    end
+    -- general.no_focus_fallback stops scrolling's own wrap_focus at the strip's end
+    local target
+    for _, window in ipairs(hl.get_windows({ workspace = ws, floating = false })) do
+        if not target or (prev and window.at.x > target.at.x) or (not prev and window.at.x < target.at.x) then
+            target = window
+        end
+    end
+    if target then
+        hl.dispatch(hl.dsp.focus({ window = "address:" .. target.address }))
     end
 end
 
