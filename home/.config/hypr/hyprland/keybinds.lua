@@ -189,52 +189,52 @@ hl.bind("SUPER + J", hl.dsp.layout("togglesplit"), { description = "Window: Togg
 hl.bind("SUPER + D", hl.dsp.window.fullscreen({ mode = "fullscreen", action = "toggle" }),
     { description = "Window: Fullscreen" })
 
---#/# bind = SUPER + F,, -- Toggle monocle layout on the current workspace
---#/# bind = SUPER + SHIFT + ←/→,, -- Cycle windows of the current workspace
--- Monocle is a built-in Hyprland layout: every window fills the workspace and only the
--- topmost one is visible. It is turned on per workspace with a workspace rule, so the
+--#/# bind = SUPER + F,, -- Toggle scrolling layout on the current workspace
+--#/# bind = SUPER + SHIFT + ←/→,, -- Cycle windows, or columns in the scrolling layout
+-- Scrolling is a built-in Hyprland layout: windows sit in columns on a strip that scrolls
+-- sideways to follow the focus. It is turned on per workspace with a workspace rule, so the
 -- other workspaces keep tiling normally.
-local monocle_rules = {} -- [workspace id] = HL.WorkspaceRule
+local scrolling_rules = {} -- [workspace id] = HL.WorkspaceRule
 
-local function monocle_toggle()
+local function toggle_scrolling()
     local ws = hl.get_active_workspace()
     if not ws then
         return
     end
-    local rule = monocle_rules[ws.id]
+    local rule = scrolling_rules[ws.id]
     if not rule then
         -- Rules are created enabled, so the first press is the "on" press
-        monocle_rules[ws.id] = hl.workspace_rule({
+        scrolling_rules[ws.id] = hl.workspace_rule({
             workspace = ws.special and ws.name or tostring(ws.id),
-            layout = "monocle",
+            layout = "scrolling",
         })
         return
     end
-    rule:set_enabled(ws.tiled_layout ~= "monocle")
+    rule:set_enabled(ws.tiled_layout ~= "scrolling")
 end
 
-local function monocle_cycle(prev)
+local function cycle_windows(prev)
     local ws = hl.get_active_workspace()
-    if ws and ws.tiled_layout == "monocle" then
-        -- Monocle's own layout message, it also raises the window it focuses
-        hl.dispatch(hl.dsp.layout(prev and "cycleprev" or "cyclenext"))
+    if ws and ws.tiled_layout == "scrolling" then
+        hl.dispatch(hl.dsp.layout(prev and "focus l" or "focus r"))
     else
         hl.dispatch(hl.dsp.window.cycle_next({ prev = prev }))
     end
 end
 
 hl.bind("SUPER + F", function()
-    if hl.plugin.proscenio_bars then
-        hl.plugin.proscenio_bars.toggle_monocle()
+    local bars = hl.plugin.proscenio_bars
+    if bars and bars.toggle_scrolling then
+        bars.toggle_scrolling()
     else
-        monocle_toggle()
+        toggle_scrolling()
     end
-end, { description = "Window: Toggle monocle layout" })
+end, { description = "Window: Toggle scrolling layout" })
 hl.bind("SUPER + SHIFT + Left", function()
-    monocle_cycle(true)
+    cycle_windows(true)
 end, { repeating = true, description = "Window: Cycle to previous window" })
 hl.bind("SUPER + SHIFT + Right", function()
-    monocle_cycle(false)
+    cycle_windows(false)
 end, { repeating = true, description = "Window: Cycle to next window" })
 hl.bind("SUPER + ALT + F", hl.dsp.window.fullscreen_state({ internal = 0, client = 3, action = "toggle" }),
     { description = "Window: Fullscreen spoof" })
