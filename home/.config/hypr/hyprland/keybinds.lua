@@ -146,7 +146,7 @@ for i = 1, 4 do
         local ws = hl.get_active_workspace()
         local is_sideways = focusdir[i] == "l" or focusdir[i] == "r"
         if is_sideways and ws and ws.tiled_layout == "scrolling" then
-            hl.dispatch(hl.dsp.focus({ monitor = focusdir[i] }))
+            hl.dispatch(hl.dsp.layout("focus " .. focusdir[i]))
         else
             hl.dispatch(hl.dsp.focus({ direction = focusdir[i] }))
         end
@@ -197,7 +197,7 @@ hl.bind("SUPER + D", hl.dsp.window.fullscreen({ mode = "fullscreen", action = "t
     { description = "Window: Fullscreen" })
 
 --#/# bind = SUPER + F,, -- Toggle scrolling layout on the current workspace
---#/# bind = SUPER + SHIFT + ←/→,, -- Cycle windows, or columns in the scrolling layout
+--#/# bind = SUPER + SHIFT + ←/→,, -- Cycle windows, or monitors from the scrolling layout
 -- Scrolling is a built-in Hyprland layout: windows sit in columns on a strip that scrolls
 -- sideways to follow the focus. It is turned on per workspace with a workspace rule, so the
 -- other workspaces keep tiling normally.
@@ -222,25 +222,10 @@ end
 
 local function cycle_windows(prev)
     local ws = hl.get_active_workspace()
-    if not ws or ws.tiled_layout ~= "scrolling" then
+    if ws and ws.tiled_layout == "scrolling" then
+        hl.dispatch(hl.dsp.focus({ monitor = prev and "l" or "r" }))
+    else
         hl.dispatch(hl.dsp.window.cycle_next({ prev = prev }))
-        return
-    end
-    local window_before = hl.get_active_window()
-    hl.dispatch(hl.dsp.layout(prev and "focus l" or "focus r"))
-    local window_after = hl.get_active_window()
-    if not window_before or not window_after or window_after.address ~= window_before.address then
-        return
-    end
-    -- general.no_focus_fallback stops scrolling's own wrap_focus at the strip's end
-    local target
-    for _, window in ipairs(hl.get_windows({ workspace = ws, floating = false })) do
-        if not target or (prev and window.at.x > target.at.x) or (not prev and window.at.x < target.at.x) then
-            target = window
-        end
-    end
-    if target then
-        hl.dispatch(hl.dsp.focus({ window = "address:" .. target.address }))
     end
 end
 
