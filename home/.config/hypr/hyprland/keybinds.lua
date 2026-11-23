@@ -145,10 +145,15 @@ for i = 1, 4 do
     hl.bind("SUPER + " .. arrowkey[i], function()
         local ws = hl.get_active_workspace()
         local is_sideways = focusdir[i] == "l" or focusdir[i] == "r"
-        if is_sideways and ws and ws.tiled_layout == "scrolling" then
-            hl.dispatch(hl.dsp.layout("focus " .. focusdir[i]))
-        else
+        if not is_sideways or not ws or ws.tiled_layout ~= "scrolling" then
             hl.dispatch(hl.dsp.focus({ direction = focusdir[i] }))
+            return
+        end
+        local window_before = hl.get_active_window()
+        hl.dispatch(hl.dsp.layout("focus " .. focusdir[i]))
+        local window_after = hl.get_active_window()
+        if not window_after or (window_before and window_after.address == window_before.address) then
+            hl.dispatch(hl.dsp.focus({ monitor = focusdir[i] }))
         end
     end, { description = "Window: Focus " .. arrowkey[i] })
 end
@@ -197,7 +202,7 @@ hl.bind("SUPER + D", hl.dsp.window.fullscreen({ mode = "fullscreen", action = "t
     { description = "Window: Fullscreen" })
 
 --#/# bind = SUPER + F,, -- Toggle scrolling layout on the current workspace
---#/# bind = SUPER + SHIFT + ←/→,, -- Cycle windows, or monitors from the scrolling layout
+--#/# bind = SUPER + SHIFT + ←/→,, -- Focus the monitor in direction
 -- Scrolling is a built-in Hyprland layout: windows sit in columns on a strip that scrolls
 -- sideways to follow the focus. It is turned on per workspace with a workspace rule, so the
 -- other workspaces keep tiling normally.
@@ -220,15 +225,6 @@ local function toggle_scrolling()
     rule:set_enabled(ws.tiled_layout ~= "scrolling")
 end
 
-local function cycle_windows(prev)
-    local ws = hl.get_active_workspace()
-    if ws and ws.tiled_layout == "scrolling" then
-        hl.dispatch(hl.dsp.focus({ monitor = prev and "l" or "r" }))
-    else
-        hl.dispatch(hl.dsp.window.cycle_next({ prev = prev }))
-    end
-end
-
 hl.bind("SUPER + F", function()
     local bars = hl.plugin.proscenio_bars
     if bars and bars.toggle_scrolling then
@@ -237,12 +233,8 @@ hl.bind("SUPER + F", function()
         toggle_scrolling()
     end
 end, { description = "Window: Toggle scrolling layout" })
-hl.bind("SUPER + SHIFT + Left", function()
-    cycle_windows(true)
-end, { repeating = true, description = "Window: Cycle to previous window" })
-hl.bind("SUPER + SHIFT + Right", function()
-    cycle_windows(false)
-end, { repeating = true, description = "Window: Cycle to next window" })
+hl.bind("SUPER + SHIFT + Left", hl.dsp.focus({ monitor = "l" }), { description = "Window: Focus monitor to the left" })
+hl.bind("SUPER + SHIFT + Right", hl.dsp.focus({ monitor = "r" }), { description = "Window: Focus monitor to the right" })
 hl.bind("SUPER + ALT + F", hl.dsp.window.fullscreen_state({ internal = 0, client = 3, action = "toggle" }),
     { description = "Window: Fullscreen spoof" })
 hl.bind("SUPER + P", hl.dsp.window.pin(), { description = "Window: Pin" })
