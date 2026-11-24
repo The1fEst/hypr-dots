@@ -84,11 +84,12 @@ The session's units are `proscenio`, `hypridle`, `cliphist-text`, `cliphist-imag
 The window bars are drawn by the `proscenio_bars` Hyprland plugin from the
 [proscenio](https://github.com/The1fEst/proscenio) repository, which hyprpm builds against the installed
 Hyprland. `./install.sh plugins` adds the repository and enables the plugin, and proscenio loads it at
-session start. Which windows get a bar, the buttons, the colors, the window rules and the scrolling toggle
+session start. Which windows get a bar, the buttons, the colors, the window rules and the layout toggle
 are documented in proscenio's `docs/docs/title-bars.md`. The dots set none of them.
 
 After a Hyprland upgrade, `./install.sh update` rebuilds the plugin with `hyprpm update`. Super + F
-toggles the scrolling layout through the plugin when it is loaded, and through the dots' own workspace rule otherwise.
+toggles the layout chosen as the shell's Fullscreen behavior (scroll or monocle) through the plugin when it is
+loaded, and the scrolling layout through the dots' own workspace rule otherwise.
 
 ## Updates
 

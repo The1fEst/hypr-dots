@@ -157,13 +157,22 @@ for i = 1, 4 do
         end
     end, { description = "Window: Focus " .. arrowkey[i] })
 end
-for i = 1, 2 do
-    local arrowkey = { "BracketLeft", "BracketRight" }
-    local focusdir = { "l", "r" }
-    local name = { "Left", "Right" }
-    hl.bind("SUPER + " .. arrowkey[i], hl.dsp.focus({ direction = focusdir[i] }),
-        { description = "Window: Focus " .. name[i] })
+--#/# bind = SUPER + [/],, -- Cycle windows of the current workspace
+local function cycle_windows(prev)
+    local ws = hl.get_active_workspace()
+    if ws and ws.tiled_layout == "monocle" then
+        -- Monocle's own layout message, it also raises the window it focuses
+        hl.dispatch(hl.dsp.layout(prev and "cycleprev" or "cyclenext"))
+    else
+        hl.dispatch(hl.dsp.window.cycle_next({ prev = prev }))
+    end
 end
+hl.bind("SUPER + BracketLeft", function()
+    cycle_windows(true)
+end, { repeating = true, description = "Window: Cycle to previous window" })
+hl.bind("SUPER + BracketRight", function()
+    cycle_windows(false)
+end, { repeating = true, description = "Window: Cycle to next window" })
 --#/# bind = SUPER + SHIFT, ↑/↓,, -- Move in direction
 for i = 1, 2 do
     local arrowkey = { "Up", "Down" }
@@ -201,7 +210,7 @@ hl.bind("SUPER + J", hl.dsp.layout("togglesplit"), { description = "Window: Togg
 hl.bind("SUPER + D", hl.dsp.window.fullscreen({ mode = "fullscreen", action = "toggle" }),
     { description = "Window: Fullscreen" })
 
---#/# bind = SUPER + F,, -- Toggle scrolling layout on the current workspace
+--#/# bind = SUPER + F,, -- Toggle the fullscreen layout (scroll or monocle) on the current workspace
 --#/# bind = SUPER + SHIFT + ←/→,, -- Focus the monitor in direction
 -- Scrolling is a built-in Hyprland layout: windows sit in columns on a strip that scrolls
 -- sideways to follow the focus. It is turned on per workspace with a workspace rule, so the
@@ -227,12 +236,12 @@ end
 
 hl.bind("SUPER + F", function()
     local bars = hl.plugin.proscenio_bars
-    if bars and bars.toggle_scrolling then
-        bars.toggle_scrolling()
+    if bars and bars.toggle_layout then
+        bars.toggle_layout()
     else
         toggle_scrolling()
     end
-end, { description = "Window: Toggle scrolling layout" })
+end, { description = "Window: Toggle fullscreen layout" })
 hl.bind("SUPER + SHIFT + Left", hl.dsp.focus({ monitor = "l" }), { description = "Window: Focus monitor to the left" })
 hl.bind("SUPER + SHIFT + Right", hl.dsp.focus({ monitor = "r" }), { description = "Window: Focus monitor to the right" })
 hl.bind("SUPER + ALT + F", hl.dsp.window.fullscreen_state({ internal = 0, client = 3, action = "toggle" }),
