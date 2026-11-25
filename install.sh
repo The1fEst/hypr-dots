@@ -31,6 +31,7 @@ MANAGED=(
   .config/wlogout
   .config/xdg-desktop-portal/hyprland-portals.conf
   .local/bin/hypr-dots-check
+  .local/bin/xdg-open
 )
 
 GENERATED=(

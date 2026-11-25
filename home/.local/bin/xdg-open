@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+# xdg-open's generic fallback hands a file without a default program to a browser.
+
+parse_path() {
+  local arg=$1 rest
+  if [[ $arg != file://* ]]; then
+    [[ $arg == -* ]] && return 1
+    path=$arg
+    return 0
+  fi
+  rest=${arg#file://}
+  rest=${rest#localhost}
+  [[ $rest == /* && $rest != *[\\?#]* && ! ${rest//%[0-9A-Fa-f][0-9A-Fa-f]/} == *%* && $rest != *%00* ]] || return 1
+  printf -v path '%b' "${rest//%/\\x}"
+}
+
+open_in_dolphin() {
+  local path type default
+  command -v dolphin >/dev/null || return 1
+  parse_path "$1" || return 1
+  [[ -f $path ]] || return 1
+  [[ $path == /* ]] || path=$PWD/${path#./}
+  type=$(xdg-mime query filetype "$path") || return 1
+  type=${type%%;*}
+  [[ -n $type ]] || return 1
+  default=$(xdg-mime query default "$type") || return 1
+  [[ -z $default ]] || return 1
+  exec dolphin --select -- "$path"
+}
+
+if (($# == 1)); then
+  open_in_dolphin "$1"
+fi
+exec /usr/bin/xdg-open "$@"

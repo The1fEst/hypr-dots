@@ -90,6 +90,12 @@ are documented in proscenio's `docs/docs/title-bars.md`. The dots set none of th
 After a Hyprland upgrade, `./install.sh update` rebuilds the plugin with `hyprpm update`. Super + F
 toggles monocle through the plugin when it is loaded, and through the dots' own monocle layout otherwise.
 
+## Opening files
+
+`~/.local/bin/xdg-open` shadows `/usr/bin/xdg-open`. When the file it is given has no default program
+for its MIME type, such as an executable or an ISO image, it opens Dolphin with the file selected
+instead of letting xdg-open's fallback start a browser. Everything else goes to `/usr/bin/xdg-open`.
+
 ## Updates
 
 `configs` writes the clone's path and its commit to `~/.local/state/hypr-dots/installed`. Five
