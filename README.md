@@ -24,7 +24,7 @@ runs every step in order. Each step also runs on its own, and running one again 
 | `./install.sh update` | rebuilds and installs the `hypr-dots` meta package when the installed one is not the `pkgver-pkgrel` of `pkg/hypr-dots/PKGBUILD`, then runs `configs`, then `hyprpm update` when the plugin repository is added |
 | `./install.sh system` | adds the user to `video`, `i2c` and `input`, loads `i2c-dev`, enables ydotool, Bluetooth and NetworkManager, sets the default apps, the GTK font and dark scheme and the Darkly Qt style, and installs Google Sans and Google Sans Flex |
 | `./install.sh shell` | makes fish the login shell, which kitty starts |
-| `./install.sh plugins` | runs `hyprpm update`, adds the [proscenio](https://github.com/The1fEst/proscenio) repository to hyprpm unless it is there, and enables proscenio_bars; needs the running Hyprland session and `sudo` |
+| `./install.sh plugins` | runs `hyprpm update`, adds the [proscenio](https://github.com/The1fEst/proscenio) repository to hyprpm unless it is there, and enables proscenio_hyprland; needs the running Hyprland session and `sudo` |
 | `./install.sh diff` | shows how the configs in `$HOME` differ from `home/` |
 
 The shell's PKGBUILD is downloaded into `~/.cache/proscenio/package` and builds `main` of
@@ -81,14 +81,14 @@ The session's units are `proscenio`, `hypridle`, `cliphist-text`, `cliphist-imag
 
 ## Window bars
 
-The window bars are drawn by the `proscenio_bars` Hyprland plugin from the
+The window bars are drawn by the `proscenio_hyprland` Hyprland plugin from the
 [proscenio](https://github.com/The1fEst/proscenio) repository, which hyprpm builds against the installed
 Hyprland. `./install.sh plugins` adds the repository and enables the plugin, and proscenio loads it at
-session start. Which windows get a bar, the buttons, the colors, the window rules and the monocle toggle
+session start. Which windows get a bar, the buttons, the colors, the window rules and the fullscreen toggle
 are documented in proscenio's `docs/docs/title-bars.md`. The dots set none of them.
 
 After a Hyprland upgrade, `./install.sh update` rebuilds the plugin with `hyprpm update`. Super + F
-toggles monocle through the plugin when it is loaded, and through the dots' own monocle layout otherwise.
+toggles fullscreen through the plugin when it is loaded, and monocle through the dots' own layout otherwise.
 
 ## Opening files
 

@@ -66,7 +66,7 @@ usage() {
   echo "            records the commit installed, for hypr-dots-check"
   echo "  system    groups, services, default apps, GTK and Qt settings, fonts"
   echo "  shell     makes fish the login shell"
-  echo "  plugins   adds the proscenio repository to hyprpm and enables proscenio_bars;"
+  echo "  plugins   adds the proscenio repository to hyprpm and enables proscenio_hyprland;"
   echo "            runs inside the Hyprland session"
   echo "  update    rebuilds the meta package when the installed one is not the version"
   echo "            pkg/hypr-dots builds, runs configs, then hyprpm update when the plugin"
@@ -382,7 +382,7 @@ plugins() {
   if ! has_plugin_repository; then
     hyprpm add "$PLUGINS_URL" <<<y
   fi
-  hyprpm enable proscenio_bars
+  hyprpm enable proscenio_hyprland
 }
 
 case ${1:-all} in

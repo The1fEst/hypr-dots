@@ -224,9 +224,9 @@ local function cycle_windows(is_backward)
 end
 
 hl.bind("SUPER + F", function()
-    local bars = hl.plugin.proscenio_bars
-    if bars and bars.toggle_monocle then
-        bars.toggle_monocle()
+    local plugin = hl.plugin.proscenio_hyprland
+    if plugin and plugin.toggle_fullscreen then
+        plugin.toggle_fullscreen()
     else
         toggle_monocle()
     end
