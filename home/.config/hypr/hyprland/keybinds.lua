@@ -142,20 +142,8 @@ hl.bind("SUPER + mouse:273", hl.dsp.window.resize(), { mouse = true, description
 for i = 1, 4 do
     local arrowkey = { "Left", "Right", "Up", "Down" }
     local focusdir = { "l", "r", "u", "d" }
-    hl.bind("SUPER + " .. arrowkey[i], function()
-        local ws = hl.get_active_workspace()
-        local is_sideways = focusdir[i] == "l" or focusdir[i] == "r"
-        if not is_sideways or not ws or ws.tiled_layout ~= "scrolling" then
-            hl.dispatch(hl.dsp.focus({ direction = focusdir[i] }))
-            return
-        end
-        local window_before = hl.get_active_window()
-        hl.dispatch(hl.dsp.layout("focus " .. focusdir[i]))
-        local window_after = hl.get_active_window()
-        if not window_after or (window_before and window_after.address == window_before.address) then
-            hl.dispatch(hl.dsp.focus({ monitor = focusdir[i] }))
-        end
-    end, { description = "Window: Focus " .. arrowkey[i] })
+    hl.bind("SUPER + " .. arrowkey[i], hl.dsp.focus({ direction = focusdir[i] }),
+        { description = "Window: Focus " .. arrowkey[i] })
 end
 for i = 1, 2 do
     local arrowkey = { "BracketLeft", "BracketRight" }
@@ -201,40 +189,54 @@ hl.bind("SUPER + J", hl.dsp.layout("togglesplit"), { description = "Window: Togg
 hl.bind("SUPER + D", hl.dsp.window.fullscreen({ mode = "fullscreen", action = "toggle" }),
     { description = "Window: Fullscreen" })
 
---#/# bind = SUPER + F,, -- Toggle scrolling layout on the current workspace
---#/# bind = SUPER + SHIFT + ←/→,, -- Focus the monitor in direction
--- Scrolling is a built-in Hyprland layout: windows sit in columns on a strip that scrolls
--- sideways to follow the focus. It is turned on per workspace with a workspace rule, so the
+--#/# bind = SUPER + F,, -- Toggle monocle layout on the current workspace
+--#/# bind = SUPER + SHIFT + ←/→,, -- Cycle windows of the current workspace
+-- Monocle is a built-in Hyprland layout: every window fills the workspace and only the
+-- topmost one is visible. It is turned on per workspace with a workspace rule, so the
 -- other workspaces keep tiling normally.
-local scrolling_rules = {} -- [workspace id] = HL.WorkspaceRule
+local monocle_rules = {} -- [workspace id] = HL.WorkspaceRule
 
-local function toggle_scrolling()
+local function toggle_monocle()
     local ws = hl.get_active_workspace()
     if not ws then
         return
     end
-    local rule = scrolling_rules[ws.id]
+    local rule = monocle_rules[ws.id]
     if not rule then
         -- Rules are created enabled, so the first press is the "on" press
-        scrolling_rules[ws.id] = hl.workspace_rule({
+        monocle_rules[ws.id] = hl.workspace_rule({
             workspace = ws.special and ws.name or tostring(ws.id),
-            layout = "scrolling",
+            layout = "monocle",
         })
         return
     end
-    rule:set_enabled(ws.tiled_layout ~= "scrolling")
+    rule:set_enabled(ws.tiled_layout ~= "monocle")
+end
+
+local function cycle_windows(is_backward)
+    local ws = hl.get_active_workspace()
+    if ws and ws.tiled_layout == "monocle" then
+        -- Monocle's own layout message, it also raises the window it focuses
+        hl.dispatch(hl.dsp.layout(is_backward and "cycleprev" or "cyclenext"))
+    else
+        hl.dispatch(hl.dsp.window.cycle_next({ prev = is_backward }))
+    end
 end
 
 hl.bind("SUPER + F", function()
     local bars = hl.plugin.proscenio_bars
-    if bars and bars.toggle_scrolling then
-        bars.toggle_scrolling()
+    if bars and bars.toggle_monocle then
+        bars.toggle_monocle()
     else
-        toggle_scrolling()
+        toggle_monocle()
     end
-end, { description = "Window: Toggle scrolling layout" })
-hl.bind("SUPER + SHIFT + Left", hl.dsp.focus({ monitor = "l" }), { description = "Window: Focus monitor to the left" })
-hl.bind("SUPER + SHIFT + Right", hl.dsp.focus({ monitor = "r" }), { description = "Window: Focus monitor to the right" })
+end, { description = "Window: Toggle monocle layout" })
+hl.bind("SUPER + SHIFT + Left", function()
+    cycle_windows(true)
+end, { repeating = true, description = "Window: Cycle to previous window" })
+hl.bind("SUPER + SHIFT + Right", function()
+    cycle_windows(false)
+end, { repeating = true, description = "Window: Cycle to next window" })
 hl.bind("SUPER + ALT + F", hl.dsp.window.fullscreen_state({ internal = 0, client = 3, action = "toggle" }),
     { description = "Window: Fullscreen spoof" })
 hl.bind("SUPER + P", hl.dsp.window.pin(), { description = "Window: Pin" })
