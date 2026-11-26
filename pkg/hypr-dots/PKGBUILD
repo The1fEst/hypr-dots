@@ -1,6 +1,6 @@
 pkgname=hypr-dots
 pkgver=1.0
-pkgrel=6
+pkgrel=7
 pkgdesc='Everything the hypr-dots configs and the proscenio shell run on'
 arch=(any)
 license=(GPL-3.0-only)
@@ -40,7 +40,6 @@ depends=(
   hyprland
   hyprlock
   hyprpicker
-  hyprpm
   hyprshot
   imagemagick
   jq
